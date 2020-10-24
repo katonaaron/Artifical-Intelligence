@@ -1,0 +1,46 @@
+\chapter{Source Code} 
+
+The code snippets below are from \verb|search.py|.
+
+
+
+\section{Nodes}
+
+To represent the search nodes, we used different strategies across the various search strategies. In some cases we used tuples containing the state, the action and the cumulative cost of a node, while in other cases we used the \verb|Node| class defined below.
+
+In the latter case, we stored in a node a reference to its parent. This information is used for reconstructing the path from the start node to the goal node, in the \verb|reconstructPath(node)| method.
+
+\lstinputlisting[language=Python, firstnumber=67, caption=The Node class]{code/node.py}
+
+\lstinputlisting[language=Python, firstnumber=87,caption=Method for reconstructing the path from the start to the goal node.]{code/reconstruct_path.py}
+  
+  
+  
+\section{Bidirectional Search}
+
+\lstinputlisting[language=Python, firstnumber=228]{code/bidirectional_search.py}
+
+
+
+\section{Depth Limited Search}
+
+\lstinputlisting[language=Python, firstnumber=366]{code/depth_limited_search.py}
+
+
+
+\section{Iterative Deepening Search}
+
+\lstinputlisting[language=Python, firstnumber=416]{code/iterative_deepening_search.py}
+
+
+
+\section{Iterative Deepening A*}
+
+\lstinputlisting[language=Python, firstnumber=433]{code/iterative_deepening_astar.py}
+
+
+
+\section{Recursive Best-First Search}
+
+\lstinputlisting[language=Python, firstnumber=301]{code/recursive_best_first_search.py}
+
