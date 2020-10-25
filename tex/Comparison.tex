@@ -1,0 +1,37 @@
+\chapter{Comparison} 
+
+Consider $b$ the branching factor and $d$ the depth of the shallowest solution.
+
+
+\section{Bidirectional Search vs Breadth-First Search}
+
+As stated in chapter \ref{ch:bs}, the bidirectional search reduces the size of the frontier and the running time from $O(b^d)$ to $O(b^{d/2})$. To find a solution with length $d$, the two frontiers contain in the worst case only the nodes with the depth $d/2$ from either nodes. Thus both the space and the running time is reduced. 
+
+However the implementation of the bidirectional search is difficult if the actions cannot be reversed fast. E.g. North $\leftrightarrow$ South.
+
+
+\section{Iterative Deepening Depth-First Search}
+
+\paragraph{vs Depth-First Search:}
+
+The depth-first search does not find always the optimal solution, and may not find any solution even if it exists in the graph. However the iterative deepening version is optimal and complete, because each path is considered in increasing order of depth.
+
+\paragraph{vs Breadth-First Search:}
+
+The running time has the same $O(b^d)$ complexity. For the iterative deepening depth-first search the space complexity is reduced from $O(b^d)$ to $O(bd)$, because the deepest node is taken first. However because of the iterative deepening, the number of expanded nodes is higher.
+
+
+\section{Iterative Deepening A* vs A*}
+
+Iterative Deepening A* is similar to A* the difference being that we do not keep all reached states in memory, at a cost of visiting some states multiple times. It is a very frequently used algorithm for problems that do not fit in memory.
+
+
+\section{Recursive Best-First Search}
+
+\paragraph{vs A*:} 
+
+RBFS uses only linear space, but suffers from frequently regenerating the nodes. Given enough time it could solve those problems that could not be solved by A* because of running out of memory.
+
+\paragraph{vs Iterative Deepening A*}
+
+The two algorithms are solutions for the same problem of reducing the size of the frontier of A*. Both suffer from revisiting  and regenerating nodes. However the RBFS is slightly more efficient, because of storing more information that the other one, thus increasing the speed.
