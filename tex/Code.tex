@@ -5,6 +5,7 @@ The code snippets below are from \verb|search.py|.
 
 
 \section{Nodes}
+\label{sec:nodes}
 
 To represent the search nodes, we used different strategies across the various search strategies. In some cases we used tuples containing the state, the action and the cumulative cost of a node, while in other cases we used the \verb|Node| class defined below.
 
@@ -23,12 +24,14 @@ In the latter case, we stored in a node a reference to its parent. This informat
 
 
 \section{Depth Limited Search}
+\label{sec:code_dls}
 
 \lstinputlisting[language=Python, firstnumber=366]{code/depth_limited_search.py}
 
 
 
-\section{Iterative Deepening Search}
+\section{Iterative Deepening Depth-First Search}
+\label{sec:code_iddfs}.
 
 \lstinputlisting[language=Python, firstnumber=416]{code/iterative_deepening_search.py}
 
@@ -41,6 +44,7 @@ In the latter case, we stored in a node a reference to its parent. This informat
 
 
 \section{Recursive Best-First Search}
+\label{sec:code_rbfs}
 
 \lstinputlisting[language=Python, firstnumber=301]{code/recursive_best_first_search.py}
 

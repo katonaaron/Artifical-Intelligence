@@ -1,1 +1,33 @@
 \chapter{Iterative Deepening Depth-First Search} 
+
+\section{Depth-Limited Search}
+\label{sec:dls}
+
+The depth-limited search is similar to the depth-first search, with the only difference, that a \textbf{depth bound} is added. Thus the algorithm searches for the goal state until the search tree's depth reaches the bound. If the bound is reached, the search backtracks to the parent node and continues searching in the next successor of the parent node. Therefore if there is a path to the goal, whose length is smaller than or equal to the bound, it will be found.
+
+\subsection{Implementation}
+
+To represent the nodes we used the \verb|Node| class, which is a simple data class whose \verb|state|,\verb|action| and \verb|cost| fields are used. More information about the class can be found in Appendix \ref{sec:nodes}.
+
+The algorithm is a modified version of the recursive \textbf{depth-first search}. At each level of recursion, the function calls itself for all of the successors. The function returns not only the found goal node on success and None on error, but also an additional boolean parameter which specifies whether the search terminated because of a cutoff, or not. In each level of recursion, the limit is decremented. When it reaches 0, the returned cutoff value is true.
+
+Source code: Appendix \ref{sec:code_dls}.
+
+
+\section{Iterative Deepening Search}
+
+The iterative deepening search strategies apply a search algorithm multiple times, with increasing bounds until the goal is reached. The calculation of the bound depends on the applied algorithm. We used the strategy of iterative deepening for the following search algorithms: depth-first search (\ref{sec:iddfs}) and A* (\ref{sec:idastar}).
+
+
+\section{Iterative Deepening Depth-First Search}
+\label{sec:iddfs}
+
+Starting from an initial bound of 0, we call the depth-limited search and verify the returned result. In case a cutoff occurred, we increase the bound by one, and start again the search. If the goal node was found, the path from the start node which ends in the goal node is reconstructed and returned.
+
+The algorithm is complete, because depth-first search, and in particular depth-limited search is guaranteed to find a solution, if the distance to the goal node is inside the bound. The bound is incremented from 0 indefinitely, thus if the solution exists, it will be found. 
+
+The algorithm is optimal for unit action costs, because if no solution was found for bound $b$, the length of the shortest path from the start node to the goal node is at least $b+1$, and if there is any solution with length $b+1$, all of them are optimal solutions, and one of them will be found by the depth-limited search.
+
+Source code: Appendix \ref{sec:code_iddfs}.
+
+
