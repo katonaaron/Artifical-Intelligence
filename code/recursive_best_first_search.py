@@ -21,7 +21,7 @@ def RBFS(problem, heuristic, visited, node, f_limit):
     Helper function of recursiveBestFirstSearch(problem, heuristic).
 
     returns:
-    - node: the goal node containing reference to its parent, or False if no solution was found.
+    - node: the goal node containing reference to its parent, or None if no solution was found.
     - f-cost: the f value obtained on the path.
     """
 
@@ -38,13 +38,13 @@ def RBFS(problem, heuristic, visited, node, f_limit):
             successors.push(child)
 
     if successors.isEmpty():
-        return False, float('inf')
+        return None, float('inf')
 
     while True:
         best = successors.pop()
 
         if best.f > f_limit:
-            return False, best.f
+            return None, best.f
 
         if successors.isEmpty():
             alternative_f = float('inf')

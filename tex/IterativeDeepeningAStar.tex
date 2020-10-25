@@ -1,11 +1,5 @@
-\documentclass{report}
-\usepackage[utf8]{inputenc}
-
-
-
-\begin{document}
-
 \chapter{Iterative Deepening A* Search}
+\label{sec:idastar}
 
 Iterative deepening is a preferred algorithm when we have a larger search state space than the one that can fit in memory and the depth of our solution is not known. 
 
@@ -13,7 +7,7 @@ Iterative Deepening A* is similar to A* the difference being that we do not keep
 
 \section{Implementation}
 
-The idea behind the algorithm was that we search the node with the lowest combined cost and heuristic first (\textbf{f = g + h}). The algorithm is limiting the size of the frontier by using this calculated f value as a bound.
+The idea behind the algorithm was that we search the node with the lowest combined cost and heuristic first ($f = g + h$). The algorithm is limiting the size of the frontier by using this calculated f value as a bound.
 
 We used a set in which we stored the visited nodes. Searching in sets is faster than searching in lists, that is why we chose set.
 Besides this set, we used a list called path, that stored for each node its state, the action that needs to be performed to get there from the previous node and the cost.
@@ -28,6 +22,3 @@ Lastly we return the minimum value which represents the minimum cost of all valu
 This algorithm was actually easy to implement after we understood the idea behind it. 
 
 Comparing the number of expanded nodes we can see that it is much larger than for the A* algorithm, because of the fact that we do not keep all reached states in memory risking the fact that we might visit some nodes more than once. 
-
-
-\end{document}

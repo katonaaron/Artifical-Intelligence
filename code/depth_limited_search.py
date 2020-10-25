@@ -24,7 +24,7 @@ def recursiveDLS(problem, visited, node, limit):
     if problem.isGoalState(node.state):
         return node, False
     if limit == 0:
-        return False, True
+        return None, True
 
     cutoff_occurred = False
     for child_state, child_action, child_cost in problem.getSuccessors(node.state):
@@ -42,6 +42,6 @@ def recursiveDLS(problem, visited, node, limit):
                 return result, False
 
     if cutoff_occurred:
-        return False, True
+        return None, True
     else:
-        return False, False
+        return None, False

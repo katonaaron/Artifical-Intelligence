@@ -1,13 +1,6 @@
-\documentclass{report}
-\usepackage[utf8]{inputenc}
-
-
-
-\begin{document}
 \chapter{Bidirectional Search} 
 
-Bidirectional search simultaneously searches from the start state to the goal state (\textbf{forward searching}) and from the goal state to the start state  (\textbf{backward searching}) hoping that these two searches will meet. 
-The optimization is b$^{d/2}$+b$^{d/2}$ $<$ b$^d$ 
+Bidirectional search simultaneously searches from the start state to the goal state (\textbf{forward searching}) and from the goal state to the start state  (\textbf{backward searching}) hoping that these two searches will meet. The time and space complexity was reduced from $O(b^d)$ to $O(2 * b^{d/2}) = O(b^{d/2}) << O(b^d)$, where $b$ is the branching factor and $d$ is the depth of the shallowest solution.
 
 \section{Implementation}
 
@@ -19,9 +12,14 @@ Entering the while loop, we firstly analyze the forward search. Take the next no
 
 Next we analyze the backward search the same way as we did for the forward search, the only difference being that we replace each action with its opposite action, we reverse the list containing them and add it to the accumulated path.
 
-The motivation behind using sets is that they are more optimal, than lists. 
+The motivation behind using sets is that they are more efficient than lists in verifying whether they contain an arbitrary element.
 
+Source code: Appendix \ref{sec:code_bs}.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.8\linewidth]{fig/bs.png}
+    \caption{Visualization of the bidirectional search algorithm. \cite{aima2020}} 
+    \label{fig:bs}
+\end{figure}
 
-
-\end{document}
