@@ -1,1 +1,33 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+
+
+
+\begin{document}
+
 \chapter{Iterative Deepening A* Search}
+
+Iterative deepening is a preferred algorithm when we have a larger search state space than the one that can fit in memory and the depth of our solution is not known. 
+
+Iterative Deepening A* is similar to A* the difference being that we do not keep all reached states in memory, at a cost of visiting some states multiple times. It is a very frequently used algorithm for problems that do not fit in memory, as stated above.
+
+\section{Implementation}
+
+The idea behind the algorithm was that we search the node with the lowest combined cost and heuristic first (\textbf{f = g + h}). The algorithm is limiting the size of the frontier by using this calculated f value as a bound.
+
+We used a set in which we stored the visited nodes. Searching in sets is faster than searching in lists, that is why we chose set.
+Besides this set, we used a list called path, that stored for each node its state, the action that needs to be performed to get there from the previous node and the cost.
+
+We have a utility function that we call repeatedly until the returned value is either a very large number ($\infty$)  or  the \textit{None} state and we change the value of the bound to the returned value if none of these conditions is satisfied. 
+
+The utility function begins with taking the last element from the path, computing the f value of this element and comparing it to the bound. If it is larger than the bound, we return the f value. If the state of the node is the goal state, it means we reached our goal, so we return the \textit{None} state. If none of these conditions are fulfilled, then we iterate through each child of the current node, add it to the visited set and to the path list, then we call the utility function on it. We make the adjustments according to the returned value of this call, remove the node from the visited list and the path. 
+Lastly we return the minimum value which represents the minimum cost of all values that exceeded the current bound. 
+
+\section{Remarks}
+
+This algorithm was actually easy to implement after we understood the idea behind it. 
+
+Comparing the number of expanded nodes we can see that it is much larger than for the A* algorithm, because of the fact that we do not keep all reached states in memory risking the fact that we might visit some nodes more than once. 
+
+
+\end{document}
