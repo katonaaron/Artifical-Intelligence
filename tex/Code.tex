@@ -7,7 +7,7 @@ The code snippets below are from \verb|search.py|.
 \section{Nodes}
 \label{sec:nodes}
 
-To represent the search nodes, we used different strategies across the various search strategies. In some cases we used tuples containing the state, the action and the cumulative cost of a node, while in other cases we used the \verb|Node| class defined below.
+To represent the search nodes, we used different strategies across the various search algorithms. In some cases we used tuples containing the state, the action and the cumulative cost of a node, while in other cases we used the \verb|Node| class defined below.
 
 In the latter case, we stored in a node a reference to its parent. This information is used for reconstructing the path from the start node to the goal node, in the \verb|reconstructPath(node)| method.
 
