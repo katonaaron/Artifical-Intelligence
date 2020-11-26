@@ -1,2 +1,162 @@
 \section{Solving lady and tigers with algebra} 
 
+
+
+
+
+\subsection{The first trial}
+
+
+
+\subsubsection{Representation}
+
+In \textbf{propositional logic} we can represent the state of the $i$-th room by the following predicates:
+
+\begin{itemize}
+
+\item $li$: There is a lady in room $i$.
+\item $ti$: There is a tiger in room $i$.
+\item $mi$: Message on the door of room $i$
+ 
+\end{itemize}
+
+Then one must specify, that if the room contains a lady, it does not contain a tiger, and viceversa.
+
+\begin{lstlisting}[numbers=none]
+l1 -> -t1.
+l2 -> -t2.
+\end{lstlisting}
+
+
+For representing the rooms in \textbf{modular arithmetics} we can define:
+
+\begin{itemize}
+
+\item 
+\begin{math}
+ri = [[``\textrm{There is a lady in room } i"]] = 1 +  [[``\textrm{There is a tiger in room } i"]] 
+\end{math}
+
+
+\item 
+\begin{math}
+mi = [[``\textrm{The message on the door of room } i \textrm{ is true}"]]
+\end{math}
+ 
+\end{itemize}
+
+In this representation the appearance of a lady and a tiger in the same room is implicitly exclusive.
+
+
+
+\subsubsection{Knowledge base}
+
+The following statements are given:
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} In this room there is a lady, and in the other room there is a tiger.
+
+\item \textbf{Message on door 2:} In one of these rooms there is a lady, and in one of these rooms there is a tiger.
+
+\item One of the messages is true, but the other one is false.
+
+\end{enumerate}
+
+The first statement enumerates all four possibilities. It does not give more information than the one included in the representation.
+
+The second statement represents the truth value of the first message. It can be written the following forms:
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> l1 & t2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 * (r2 + 1).
+\end{lstlisting}
+
+\end{multicols}
+
+One can observe that logical equivalence was replaced with equality, conjunction with multiplication, and negation with an addition by one.
+
+The second message states that at least one tiger and at least one lady exists. Because there are only two rooms, this means that one room contains a lady, and the other one contains the tiger. Thus we can use the XOR operator between \verb|r1| and \verb|r2| to force exclusivity, which in the case of the modulo 2 algebra it is represented by the ''+`` symbol.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> (l1 | l2) & (t1 | t2).
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = r1 + r2.
+\end{lstlisting}
+
+\end{multicols}
+
+As for the fourth statement, we simply need to specify that the two messages are not equal, i.e. the first is equal with the negation of the second. Or we can say that the two does not take the same value simultaneously (XOR).
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> -m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 + m2 = 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+
+\subsubsection{Resolution}
+
+The advantage of the modular arithmetics is that it can be resolved by algebraic methods, taking into consideration the rules of the boolean ring.
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 * (r2 + 1) \label{eq:first_m1}\\
+ m2 = r1 + r2 \label{eq:first_m2}\\
+ m1 + m2 = 1 \label{eq:first_m1m2}
+\end{numcases}
+
+By replacing $m1$ and $m2$ in \ref{eq:first_m1m2} we obtain:
+
+\begin{center}
+\begin{math}
+ r1 * (r2 + 1) + r1 + r2 = 1
+\end{math} 
+\end{center}
+
+Which can be rewritten as 
+
+\begin{center}
+\begin{math}
+ r2 * (r1 + 1) + r1 + r1 = 1
+\end{math} 
+\end{center}
+
+Knowing that $x + x = 0$ and $x + 0 = x$, we can omit the $r1+r1$ term form the equation and obtain:
+
+\begin{center}
+\begin{math}
+ r2 * (r1 + 1) = 1
+\end{math} 
+\end{center}
+
+In order to satisfy the equation, both operands of the multiplication must be 1. Otherwise the product would be 0. Therefore the result will be:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 0\\
+ r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
