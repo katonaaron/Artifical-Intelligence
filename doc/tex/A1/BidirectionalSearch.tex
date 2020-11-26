@@ -1,9 +1,9 @@
-\chapter{Bidirectional Search} 
+\section{Bidirectional Search} 
 \label{ch:bs}
 
 Bidirectional search simultaneously searches from the start state to the goal state (\textbf{forward searching}) and from the goal state to the start state  (\textbf{backward searching}) hoping that these two searches will meet. The time and space complexity was reduced from $O(b^d)$ to $O(2 * b^{d/2}) = O(b^{d/2}) << O(b^d)$, where $b$ is the branching factor and $d$ is the depth of the shallowest solution.
 
-\section{Implementation}
+\subsection{Implementation}
 
 
 The algorithm uses the \textbf{Breadth-First Search policy}, meaning that it takes the shallowest node first. It stops when the forward and backward search intersect. If no solutions is found, than it returns \textit{None}.

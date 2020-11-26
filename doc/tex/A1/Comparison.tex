@@ -1,16 +1,16 @@
-\chapter{Comparison} 
+\section{Comparison} 
 
 Consider $b$ the branching factor and $d$ the depth of the shallowest solution.
 
 
-\section{Bidirectional Search vs Breadth-First Search}
+\subsection{Bidirectional Search vs Breadth-First Search}
 
 As stated in chapter \ref{ch:bs}, the bidirectional search reduces the size of the frontier and the running time from $O(b^d)$ to $O(b^{d/2})$. To find a solution with length $d$, the two frontiers contain in the worst case only the nodes with the depth $d/2$ from either nodes. Thus both the space and the running time is reduced. 
 
 However the implementation of the bidirectional search is difficult if the actions cannot be reversed fast. E.g. North $\leftrightarrow$ South.
 
 
-\section{Iterative Deepening Depth-First Search}
+\subsection{Iterative Deepening Depth-First Search}
 
 \paragraph{vs Depth-First Search:}
 
@@ -21,12 +21,12 @@ The depth-first search does not find always the optimal solution, and may not fi
 The running time has the same $O(b^d)$ complexity. For the iterative deepening depth-first search the space complexity is reduced from $O(b^d)$ to $O(bd)$, because the deepest node is taken first. However because of the iterative deepening, the number of expanded nodes is higher.
 
 
-\section{Iterative Deepening A* vs A*}
+\subsection{Iterative Deepening A* vs A*}
 
 Iterative Deepening A* is similar to A* the difference being that we do not keep all reached states in memory, at a cost of visiting some states multiple times. It is a very frequently used algorithm for problems that do not fit in memory.
 
 
-\section{Recursive Best-First Search}
+\subsection{Recursive Best-First Search}
 
 \paragraph{vs A*:} 
 
