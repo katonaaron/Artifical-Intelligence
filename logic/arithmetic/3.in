@@ -2,20 +2,20 @@ set(arithmetic).
 assign(domain_size, 2).
 assign(max_models, -1).
 
-% m1 = [[“the message on the first door is true”]] 
-% m2 = [[“the message on the second is true”]] 
-% r1 = [["there is a lady in room 1”]] = 1 + [[“there is a tiger in room 1”]] 
-% r2 = [[“there is a lady in room 2”]] = 1 + [[“there is a tiger in room 2”]]  
+% m1 = [[“The message on the door of room 1 is true”]] 
+% m2 = [[“The message on the door of room 2 is true”]] 
+% r1 = [["There is a lady in room 1”]] = 1 + [[“There is a tiger in room 1”]] 
+% r2 = [[“There is a lady in room 2”]] = 1 + [[“There is a tiger in room 2”]]
 
 formulas(assumptions).
 
-    % either a tiger is in this room or a lady is in the other room
+    % Either a tiger is in this room or a lady is in the other room
     m1 = (r1 + 1) + r2.
 
-    % a lady is in the other room
+    % A lady is in the other room
     m2 = r1.
 
-    % either both are true or both are false
+    % Either both are true or both are false
     m1 = m2.
 
 end_of_list.
