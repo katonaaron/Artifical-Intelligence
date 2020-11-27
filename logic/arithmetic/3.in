@@ -1,4 +1,5 @@
 set(arithmetic).
+set(integer_ring).
 assign(domain_size, 2).
 assign(max_models, -1).
 
@@ -10,7 +11,10 @@ assign(max_models, -1).
 formulas(assumptions).
 
     % Either a tiger is in this room or a lady is in the other room
-    m1 = (r1 + 1) + r2.
+    % m1 = ((r1 + 1) * r2 + (r1 + 1) + r2) mod 2.
+    % By double negation and De Morgan's Law we obtain: 
+    %   "It's not true that a lady is in the first room and a tiger in the second"
+    m1 = (r1 * (r2 + 1) + 1) mod 2.
 
     % A lady is in the other room
     m2 = r1.

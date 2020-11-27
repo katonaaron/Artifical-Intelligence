@@ -1,0 +1,17 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+
+    % At least one of these rooms contains a lady (=OR)
+    m1 = r1 * r2 + r1 + r2.
+
+    % A tiger is in the other room (=NOT r1)
+    m2 = r1 + 1.
+
+    % Either both are true or both are false
+    % (m1 + m2) mod 2 = 0.
+    m1 = m2.
+
+end_of_list.
