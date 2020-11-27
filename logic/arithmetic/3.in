@@ -1,5 +1,4 @@
 set(arithmetic).
-set(integer_ring).
 assign(domain_size, 2).
 assign(max_models, -1).
 
