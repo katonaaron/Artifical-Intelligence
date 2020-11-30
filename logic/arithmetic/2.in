@@ -2,12 +2,19 @@ set(arithmetic).
 assign(domain_size, 2).
 assign(max_models, -1).
 
+% m1 = [["The message on the door of room 1 is true"]] 
+% m2 = [["The message on the door of room 2 is true"]] 
+% r1 = [["There is a lady in room 1"]] 
+%    = 1 + [["There is a tiger in room 1"]] 
+% r2 = [["There is a lady in room 2"]] 
+%    = 1 + [["There is a tiger in room 2"]]  
+
 formulas(assumptions).
 
-    % At least one of these rooms contains a lady (=OR)
+    % Message on door #1: At least one of these rooms contains a lady
     m1 = r1 * r2 + r1 + r2.
 
-    % A tiger is in the other room (=NOT r1)
+    % Message on door #2: A tiger is in the other room
     m2 = r1 + 1.
 
     % Either both are true or both are false
