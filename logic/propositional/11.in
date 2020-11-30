@@ -72,9 +72,6 @@ formulas(assumptions).
  t2 -> -m2.
  t3 -> -m3.
  
- %If room is empty, the message can be either true or false
- e1 -> (m1 | -m1) .
- e2 -> (m2 | -m2) .
- e3 -> (m3 | -m3) .
+
 
 end_of_list. 	

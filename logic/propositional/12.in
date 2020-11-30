@@ -1,0 +1,103 @@
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+
+ %there is one lady
+ l1 | l2 | l3 | l4 |l5 |l6 |l7|l8|l9.
+ 
+ %no lady in more than 1 room; the princess is unique 
+ l1 -> -l2 & -l3 & -l4 & -l5 & -l6 & -l7 & -l8 & -l9.
+ l2 -> -l1 & -l3 & -l4 & -l5 & -l6 & -l7 & -l8 & -l9.
+ l3 -> -l1 & -l2 & -l4 & -l5 & -l6 & -l7 & -l8 & -l9.
+ l4 -> -l1 & -l2 & -l3 & -l5 & -l6 & -l7 & -l8 & -l9.
+ l5 -> -l1 & -l2 & -l4 & -l3 & -l6 & -l7 & -l8 & -l9.
+ l6 -> -l1 & -l2 & -l4 & -l5 & -l3 & -l7 & -l8 & -l9.
+ l7 -> -l1 & -l2 & -l4 & -l5 & -l6 & -l3 & -l8 & -l9.
+ l8 -> -l1 & -l2 & -l4 & -l5 & -l6 & -l8 & -l3 & -l9.
+ l9 -> -l1 & -l2 & -l4 & -l5 & -l6 & -l7 & -l8 & -l3.
+
+
+ l1 -> -t1 & -e1.
+ l2 -> -t2 & -e2.
+ l3 -> -t3 & -e3.
+ l4 -> -t4 & -e4.
+ l5 -> -t5 & -e5.
+ l6 -> -t6 & -e6.
+ l7 -> -t7 & -e7.
+ l8 -> -t8 & -e8.
+ l9 -> -t9 & -e9.
+ 
+%In the other 8 rooms there are tigers or they are empty
+ t1 | t2 | t3 | t4 | t5 | t6 | t7 | t8 | t9.
+ e1 | e2 | e3 | e4 | e5 | e6 | e7 | e8 | e9.
+ 
+ t1 -> -e1. 
+ t2 -> -e2. 
+ t3 -> -e3. 
+ t4 -> -e4. 
+ t5 -> -e5. 
+ t6 -> -e6. 
+ t7 -> -e7.
+ t8 -> -e8. 
+ t9 -> -e9. 
+ 
+
+ 
+ 
+
+%The lady is in an odd numbered room
+ m1 <-> l1 | l3 | l5 | l7 | l9.
+ 
+%This room is empty
+ m2 <-> e2.
+ 
+%Either sign 5 is right or dign 7 is wrong
+ m3 <-> m5 | -m7.
+ 
+%Sign 1 is wrong
+ m4 <-> -m1.
+ 
+%Either sign 2 or sign 4 is true
+ m5 <-> m2 | m4.
+ 
+%Sign 3 is wrong
+ m6 <-> -m3.
+ 
+%The lady is not in room 1
+ m7 <-> -l1.
+ 
+%This room contains a tiger and room 9 is empty
+ m8 <-> t8 & e9.
+ 
+%This room contains a tiger and 6 is wrong
+ m9 <-> t9 & (-m6).
+ 
+ 
+%If lady in room, the message is true
+ l1 -> m1.
+ l2 -> m2.
+ l3 -> m3.
+ l4 -> m4.
+ l5 -> m5.
+ l6 -> m6.
+ l7 -> m7.
+ l8 -> m8.
+ l9 -> m9.
+ 
+%If tiger in room, message is false
+ t1 -> -m1.
+ t2 -> -m2.
+ t3 -> -m3.
+ t4 -> -m4.
+ t5 -> -m5.
+ t6 -> -m6.
+ t7 -> -m7.
+ t8 -> -m8.
+ t9 -> -m9.
+ 
+
+
+ end_of_list. 
+ 
+
