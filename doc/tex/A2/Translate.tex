@@ -1,1 +1,11 @@
- \section{Translating propositional logic to modular arithmetic programatically}
+\section{Translating propositional logic to modular arithmetic programatically}
+
+Our purpose was not to write a solver for the equations in the ring form. Instead, a translator program was written in Python which converts Mace4 input files from propositional logic to modular arithmetic.
+
+For this purpose, the \textbf{SymPy} library was used which provides symbolic computation capabilities in Python. However it has some limitations: 
+
+\begin{itemize}
+\item Does not simplify $x^2$ to $x$ automatically. Solved by modifying the expression tree.
+\item We could not find any possibility for achieving all the capabilities from \ref{sec:solve} at the same time, i.e. solving multi-variable equation on the Boolean ring.
+\end{itemize}
+

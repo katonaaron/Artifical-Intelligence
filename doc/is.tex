@@ -13,6 +13,7 @@
 \usepackage{multicol}
 \usepackage{amsmath}
 \usepackage[subnum]{cases}
+\usepackage{stmaryrd}
 
 \setlength{\columnsep}{1cm}
 
@@ -30,7 +31,7 @@
     basicstyle=\ttfamily\footnotesize,
     breakatwhitespace=false,         
     breaklines=true,                 
-    captionpos=b,                    
+    captionpos=t,                    
     keepspaces=true,                 
     numbers=left,                    
     numbersep=5pt,                  
@@ -43,6 +44,10 @@
 }
 
 \lstset{style=mystyle}
+
+\newcommand{\namedlisting}[2][]{%
+    \lstinputlisting[caption={\texttt{\detokenize{#2}}},#1]{#2}%
+}
 
 \newcommand{\currentdata}{14 February 2015}
 \newtheorem{example}{Example}

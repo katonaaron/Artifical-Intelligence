@@ -1,2 +1,79 @@
 \section{Logic via algebra} 
 
+The article \cite{Ciraulo2020algebra} presents the theory about using algebra for solving logic puzzles. Below are summarized the parts that are used in this chapter.
+
+0 and 1 represent the truth values ``false'' and respectively ``true''. $\llbracket P \rrbracket$ represents the truth value of the proposition $P$.
+
+\begin{itemize}
+
+\item $\llbracket P \rrbracket = 1 \iff P$ is true
+
+\item $\llbracket P \rrbracket = 0 \iff P$ is false
+
+\end{itemize}
+
+The set $\{0, 1\}$ is:
+
+\begin{itemize}
+
+\item the smallest possible Boolean algebra
+
+\item a distributive bounded lattice in which
+every element has a complement
+
+\item a Boolean ring: $x^2 = x \; \forall x$
+
+\item a field of characteristic 2: $x + x = 0 \; \forall x$
+
+\end{itemize}
+
+Therefore any Boolean connective can be expressed as a polynomial. Table \ref{table:boolean_connectives} presents the connectives both in lattice and ring form. This table is used for translating the statements of the logic puzzles into equations. It is also used for the program which converts a Mace4 input file from propositional logic to modular arithmetic.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ rcl } 
+ \hline
+ CONNECTIVE & LATTICE form & RING form \\ 
+ \hline
+ Conjunction (AND) & $p \land q$ & $pq$ \\ 
+ Exclusive disjunction (XOR) & $(p \lor q) \land \neg(p \land q)$ & $p + q$ \\  
+ Inclusive disjunction (OR) & $p \lor q$ & $pq + p + q$ \\ 
+ Negation & $\neg p$ & $p + 1$ \\ 
+ Implication ($\rightarrow$) & $q \lor \neg p $ & $pq + p + 1$ \\  
+ Biconditional ($\leftrightarrow$) & $(p \land q) \lor (\neg p \land \neg q)$ & $p + q + 1$ \\   
+ Sheffer stroke (NAND) & $\neg (p \land q)$ & $pq + 1$ \\ 
+ Pierce’s arrow (NOR) & $\neg (p \lor q)$ & $pq + p + q + 1$ \\ 
+ \hline
+\end{tabular}
+\caption{Boolean connectives in the language of Boolean rings \cite{Ciraulo2020algebra}}
+\label{table:boolean_connectives}
+\end{table}
+
+A logical puzzle is composed of statements in which an information about $A$ is equivalent with a predicate $P$. Can be written as:
+
+\begin{center}
+\begin{math}
+a = p
+\end{math}
+\end{center}
+
+Where $p = \llbracket P \rrbracket$ and $a$ has the truth value of that information about A, e.g. $a = \llbracket ``A \textrm{ is a knight}" \rrbracket$ 
+
+Thus the puzzle can be written as a system of equations:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ a_1 = p_1\\
+ \dots\\
+ a_n = p_n
+\end{cases}
+\end{math} 
+\end{center}
+
+And can be reduced to the equation:
+
+\begin{equation}
+\prod_{i=1}^{n} (p_i + a_i + 1) = 1
+\label{eq:one_eq}
+\end{equation}
