@@ -1,0 +1,80 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+% l1: There is a lady in room 1
+% l2: There is a lady in room 2
+% l3: There is a lady in room 3
+% t1: There is a tiger in room 1
+% t2: There is a tiger in room 2
+% t3: There is a tiger in room 3
+% e1: Room 1 is empty
+% e2: Room 2 is empty
+% e3: Room 3 is empty
+% m1: Message on the door of room 1
+% m2: Message on the door of room 2
+% m3: Message on the door of room 3
+
+
+
+ %there is a lady in room 1, 2 or 3
+ l1 | l2 | l3.
+ 
+ %no lady in more than 1 room; the princess is unique 
+ l1 -> -l2 & -l3.
+ l2 -> -l1 & -l3.
+ l3 -> -l1 & -l2.
+
+ %no tiger in the room where the lady stays, room not empty if lady is in it
+ l1 -> -t1 & -e1.
+ l2 -> -t2 & -e2.
+ l3 -> -t3 & -e3.
+ 
+
+ t1| t2 | t1.
+
+
+ %no tiger in more than 1 room 
+ t1 -> -t2 & -t3.
+ t2 -> -t1 & -t3.
+ t3 -> -t2 & -t1.
+ 
+%if there is a tiger in the room it can not be empty
+ t1 -> -e1.
+ t2 -> -e2.
+ t3 -> -e3.
+ 
+ e1|e2|e3.
+ 
+ %no more than one empty room
+ e1 -> -e2 & -e3.
+ e2 -> -e1 & -e3.
+ e3 -> -e2 & -e1.
+ 
+
+ %Room three is empty
+ m1 <-> e3.
+ 
+ %There is a tiger in room one.
+ m2 <-> t1.
+ 
+ %This room is empty
+ m3 <-> e3.
+ 
+ %If lady in room, the message is true
+ l1 -> m1.
+ l2 -> m2.
+ l3 -> m3.
+ 
+ %If tiger in room, the message is false
+ t1 -> -m1.
+ t2 -> -m2.
+ t3 -> -m3.
+ 
+ %If room is empty, the message can be either true or false
+ e1 -> (m1 | -m1) .
+ e2 -> (m2 | -m2) .
+ e3 -> (m3 | -m3) .
+
+end_of_list. 	

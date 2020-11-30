@@ -1,0 +1,30 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+% mij = [[“Message i is on room j and it is true”]] 
+% r1 = [["There is a lady in room 1”]] = 1 + [[“There is a tiger in room 1”]] 
+% r2 = [[“There is a lady in room 2”]] = 1 + [[“There is a tiger in room 2”]] 
+
+
+%This room contains a tiger
+m11 = (r1 + 1) mod 2.
+m12 = (r2 + 1) mod 2.
+
+%Both rooms contain a tiger 
+m21 = ((r1 + 1) * (r2 + 1)) mod 2.
+m22 = m21.
+
+
+%If lady in first room, message is true
+(r1 * ( m11 * m21 + m11 + m21) + r1 + 1) mod 2 = 1.
+
+((r1 + 1) * ((m11 + 1) * ( m21 + 1) + m11 + m21) + r1) mod 2 = 1.
+
+%If lady in second room, message is false
+((r2 + 1)*(m12 * m22 + m12 + m22) + r2)mod 2= 1.
+
+(r2 * ((m12 + 1) * (m22 + 1) + m12 + m22) + r2 + 1) mod 2 = 1.
+
+end_of_list.

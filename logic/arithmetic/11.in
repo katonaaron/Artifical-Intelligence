@@ -1,0 +1,67 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+
+% m1 = [[“The message on the door of room 1 is true”]] 
+% m2 = [[“The message on the door of room 2 is true”]] 
+% m3 = [[“The message on the door of room 3 is true”]] 
+% r1 = [["There is a lady in room 1”]] 
+% r2 = [[“There is a lady in room 2”]] 
+% r3 = [[“There is a lady in room 3”]] 
+% t1 = [["There is a tiger in room 1”]] 
+% t2 = [[“There is a tiger in room 2”]] 
+% t3 = [[“There is a tiger in room 3”]]  
+% e1 = [["Room 1 is empty”]] 
+% e2 = [[“Room 2 is empty”]] 
+% e3 = [[“Room 3 is empty”]] 
+
+
+%One empty, one lady, one tiger
+l1 * l2 * l3  = 0.
+l1 + l2 + l3  = 1.
+
+
+t1 * t2 * t3  = 0.
+t1 + t2 + t3  = 1.
+
+
+e1 * e2 * e3  = 0.
+e1 + e2 + e3  = 1.
+
+%One room can only contain a lady/tiger or it is empty
+(l1 * ((t1 + 1) * (e1 + 1)) + l1 + 1) mod 2 = 1.
+(l2 * ((t2 + 1) * (e2 + 1)) + l2 + 1) mod 2 = 1.
+(l3 * ((t3 + 1) * (e3 + 1)) + l3 + 1) mod 2 = 1.
+
+
+(t1 * ((e1 + 1) * (l1 + 1)) + t1 + 1) mod 2 = 1.
+(t2 * ((e2 + 1) * (l2 + 1)) + t2 + 1) mod 2 = 1.
+(t3 * ((e3 + 1) * (l3 + 1)) + t3 + 1) mod 2 = 1.
+
+%Room three is empty
+m1 = e3.
+
+%There is a tiger in room one.
+m2 = t1.
+
+%This room is empty
+m3 = e3.
+
+%If lady in room, the message is true
+(l1 * m1 + l1 + 1) mod 2 = 1.
+(l2 * m2 + l2 + 1) mod 2 = 1.
+(l3 * m3 + l3 + 1) mod 2 = 1.
+
+%If tiger in room, the message is false
+(t1 * (m1 + 1) + t1 + 1) mod 2 = 1.
+(t2 * (m2 + 1) + t2 + 1) mod 2 = 1.
+(t3 * (m3 + 1) + t3 + 1) mod 2 = 1.
+
+%If room is empty, the message can be either true or false
+(e1 * ((m1 + 1) * m1 + m1 + 1 + m1) + e1 + 1) mod 2 = 1.
+(e2 * ((m2 + 1) * m2 + m2 + 1 + m2) + e2 + 1) mod 2 = 1.
+
+
+end_of_list.

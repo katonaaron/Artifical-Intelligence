@@ -1,0 +1,53 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+
+% l1: There is a lady in room 1
+% l2: There is a lady in room 2
+% l3: There is a lady in room 3
+% t1: There is a tiger in room 1
+% t2: There is a tiger in room 2
+% t3: There is a tiger in room 3
+% m1: Message on the door of room 1
+% m2: Message on the door of room 2
+% m3: Message on the door of room 3
+
+ %One lady and two tigers
+ l1 & t2 & t3 | l2 & t1 & t3 | l3 & t1 & t2.
+ 
+ %no lady in more than 1 room; the princess is unique 
+ l1 -> -l2.
+ l1 -> -l3.
+ l2 -> -l1.
+ l2 -> -l3.
+ l3 -> -l1.
+ l3 -> -l2.
+
+
+ %no tiger in the room where the lady stays
+ l1 -> -t1.
+ l2 -> -t2.
+ l3 -> -t3.
+
+%A tiger is in room two
+ m1 <-> t2.
+
+%A tiger is in this room 
+ m2 <-> t2.
+ 
+%A tiger is in room one
+ m3 <-> t1.
+ 
+%The sign on the door, where the lady is, is true
+ l1 -> m1.
+ l2 -> m2.
+ l3 -> m3.
+
+%From the other two signs at least one is false 
+m1 -> -m2 | -m3.
+m2 -> -m1 | -m3.
+m3 -> -m1|-m2.
+
+end_of_list. 	

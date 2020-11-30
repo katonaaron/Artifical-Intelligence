@@ -1,0 +1,37 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+
+% l1: There is a lady in room 1
+% l2: There is a lady in room 2
+% t1: There is a tiger in room 1
+% t2: There is a tiger in room 2
+% mij: Message i on the door of room j
+
+%Either one lady and one tiger or two tigers or two ladies
+l1 & l2 | t1&t2 | t1 & l2 | t2 & l1.
+
+%If lady in room, there is no tiger
+l1 -> -t1.
+l2 -> -t2.
+
+%This rooms contains a tiger
+m11 <-> t1.
+m12 <-> t2.
+
+%Both rooms contain tigers
+m21 <-> t1 & t2.
+m22 <->t1 & t2.
+
+
+%If lady in first room, message is true. If tiger in first room, message is false
+l1 -> m11 | m21.
+t1 -> -m11 | -m21.
+
+%If tiger in second room, message is true, if lady in second room, message is false
+l2 -> -m12 | -m22.
+t2 -> m12 | m22.
+
+end_of_list. 	

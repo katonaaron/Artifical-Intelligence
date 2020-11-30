@@ -1,0 +1,33 @@
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions).
+% m1 = [[“The message on the door of room 1 is true”]] 
+% m2 = [[“The message on the door of room 2 is true”]] 
+% m3 = [[“The message on the door of room 3 is true”]] 
+% r1 = [["There is a lady in room 1”]] = 1 + [[“There is a tiger in room 1”]] 
+% r2 = [[“There is a lady in room 2”]] = 1 + [[“There is a tiger in room 2”]] 
+% r3 = [[“There is a lady in room 3”]] = 1 + [[“There is a tiger in room 3”]] 
+
+%Lady in one room and tigers in the other two rooms
+
+% One lady and two tigers
+r1 * r2 * r3  = 0.
+r1 + r2 + r3  = 1.
+    
+%Tiger in this room
+m1 = (r1 + 1) mod 2.
+
+%Lady in this room
+m2 = r2.
+
+
+%Tiger in room 2
+m3 = (r2 + 1)  mod 2.
+
+
+%At most one of the three signs is true
+((m1 + 1) * (m2 + 1) + (m1 + 1) * (m3 + 1) + (m2 + 1) * (m3 + 1)) mod 2 = 1.
+
+end_of_list.
