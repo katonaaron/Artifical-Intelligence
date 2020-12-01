@@ -1,4 +1,4 @@
-python translator.py -s -c -m --mod -f input.txt | mace4 | interpformat
+$python translator.py -s -c -m --mod -f input.txt | mace4 | interpformat
 
 === Mace4 starting on domain size 2. ===
 
