@@ -1,0 +1,11 @@
+python translator.py -s -c -m --mod -f input.txt | mace4 | interpformat
+
+=== Mace4 starting on domain size 2. ===
+
+------ process 55484 exit (all_models) ------
+interpretation( 2, [number = 1,seconds = 0], [
+    function(l1, [0]),
+    function(l2, [1]),
+    function(m1, [0]),
+    function(m2, [1])]).
+ 

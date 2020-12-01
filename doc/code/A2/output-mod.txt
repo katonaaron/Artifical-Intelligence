@@ -1,0 +1,8 @@
+$python translator.py -s -c -m --mod -f input.txt
+assign(max_models, -1).
+set(arithmetic).
+assign(domain_size, 2).
+
+formulas(assumptions).
+        (m2*(l1*l2*m1 + l1*l2 + l2*m1 + l2)) mod 2 = 1.
+end_of_list. 

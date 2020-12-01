@@ -1,0 +1,121 @@
+\section{Usage of the translator program}
+
+By calling the program with the \verb|-h| or \verb|--help| parameters the following list of help message is shown. It describes all the command line arguments used by the program.
+
+\begin{lstlisting}[numbers=none,caption=Help message of the program]
+$ python translator.py -h
+
+Usage: translator.py [options] [-f <inputfile>]
+
+A converter from propositional logic to modular arithmetic in the mace4 format
+
+Options:
+    -c, --collect       Collects the terms of each expression by the decreasing frequency of their symbols.
+    -h, --help          Prints help message
+    -f, --file string   Path to the input file. If the option is missing, the program reads from STDIN 
+    -m, --merge         Merges all the expressions of a "formulas" section into a single expression.
+        --mod           Wraps all expressions in "mod 2"
+    -s, --subs          Substitutes symbols with their corresponding expression. The substitutions must be given in the "a <-> f(b)." format in "formulas(substitutions)."
+
+\end{lstlisting}
+
+
+
+\subsection{Input and output}
+
+If the \verb|-f| or \verb|--file| parameter is not given, the program reads the input file from the STDIN. This can be used for supplying a piped input. If the flag is given, the program opens the file and reads the lines from it.
+
+\begin{lstlisting}[numbers=none, caption=The possible ways of supplying the input to the program]
+$ python translator.py -f input.txt
+$ python translator.py --file=input.txt
+$ cat input.txt | python translator.py
+$ python translator.py < input.txt
+\end{lstlisting}
+
+The output of the program is written to the STDOUT. Therefore it can be used both for writing into a file and for piping into another program.
+
+\begin{lstlisting}[numbers=none, caption=The possible ways of using the output of the program]
+$ cat input.txt | python translator.py --mod | mace4 | interpformat
+$ python translator.py < input.txt > output.txt
+\end{lstlisting}
+
+
+
+
+\subsection{Refining the output}
+
+There are various options to transform the output of the program.
+
+\subsubsection{No refining}
+
+Consider the following input file:
+
+\lstinputlisting[caption=Sample input file]{code/A2/input-1.txt}
+ 
+The input file consists of a list of five formulas, two command, a several comments. If the program is called without setting any flags, the following output would be observed:
+
+\lstinputlisting[caption=Program output for the sample file]{code/A2/output-simple.txt}
+
+One can observe, that the all the commands that not contain ``arithmetic'' or ``domain\_size'' as first arguments, are directly copied to the output. Then these two values is automatically set by the program: to use arithmetic resolution on a domain size of 2. This is done in order to ensure that the output is a valid mace4 input.
+
+
+
+\subsubsection{Substitution}
+
+One can also observe that in the previous output the formulas are at the same place, but they are converted to the ring form and simplified. However, each predicate is translated and simplified separately. Therefore, in this case, the program does not know that it could substitute \verb|t1| with \verb|(l1 + 1)|, thus further simplifying the equations.
+
+To specify substitutions, one must write formulas of form $a \leftrightarrow f(b)$, where $a$ is the symbol to be substituted and $f(b)$ will be the expression that substitutes it. These substitution rules must be written in the body of \verb|formulas(substitutions).| . Below can be seen the same input file with added substitutions.
+
+\lstinputlisting[caption=Sample input file with substitutions]{code/A2/input-subs.txt}
+
+Calling the program with the \verb|-s| or \verb|--subs| flags, it will give the following output:
+
+\lstinputlisting[caption=Program output for the sample file with substitutions]{code/A2/output-subs.txt}
+
+One can observe the following:
+
+\begin{itemize}
+\item The substitution formulas were removed from the output.
+
+\item Because of the substitutions, the first two formulas became tautologies. However they were not removed from the output, in order to preserve the number and the order of the formulas. 
+
+\item The result became easily readable, close to the one that we wrote by hand in \ref{lst:arith_1}. 
+\end{itemize}
+
+
+
+\subsubsection{Collecting (grouping) terms}
+
+The lengths of the expressions can further be reduced by grouping the terms according to the distributivity rule of the Boolean ring. The terms are grouped by the decreasing order of the apparitions of the symbols.
+
+Calling the program with the \verb|-c| or \verb|--collect| flags for the same input, it will give the following output:
+
+\lstinputlisting[caption=Program output for the sample file with substitutions and collecting]{code/A2/output-collect.txt}
+
+Besides the third formula, no expression contains a symbol more than once. In the third formula \verb|m1| appears once, \verb|l2| appears once, and \verb|l1| appears twice. The list containing the symbols in the decreasing order of frequency will be \verb|[r1, r2, m1]|. Therefore the terms of the expression are grouped by this order which results in the same output that was printed to the console.
+
+
+
+
+\subsubsection{Merging expressions}
+
+According to the equation \ref{eq:one_eq}, by multiplying each expression, we obtain a single multi-variable equation whose solutions will be the solutions of the logic puzzle.
+
+Calling the program with the \verb|-m| or \verb|--merge| flags for the same input, it will multiply all equation into a single one, and will give the following output:
+
+\lstinputlisting[caption=Program output for the sample file with substitutions{$,$} collecting and merging]{code/A2/output-merge.txt}
+
+Providing that single equation to any mathematical tool that satisfies the capabilities mentioned in \ref{sec:solve} will give the solutions for each symbol, therefore solving the logic puzzle. Thus this program exemplifies the idea mentioned in \cite{Ciraulo2020algebra}: ``Solving Knights-and-Knaves with One Equation''
+
+
+
+
+\subsubsection{Wrapping equations in ``mod 2''}
+
+Because of the flaw of Mace4 mentioned in \ref{sec:mace4_flaw}, some expressions must be wrapped in ``mod 2'' in order to ensure that mace4 can solve it.
+
+Therefore the program provides the \verb|--mod| flag. When it is set, all the expressions are wrapped in ``mod2''. Calling the sample program with this flag for the same input will result in the following output:
+
+\lstinputlisting[caption=Program output for the sample input with substitutions{$,$} collecting{$,$} merging and wrapping in mod 2]{code/A2/output-merge.txt}
+
+\lstinputlisting[caption=The output of mace4 for the previous program output given as input]{code/A2/output-mace4.txt}

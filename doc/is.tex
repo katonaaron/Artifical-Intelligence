@@ -14,6 +14,7 @@
 \usepackage{amsmath}
 \usepackage[subnum]{cases}
 \usepackage{stmaryrd}
+\usepackage{nameref}
 
 \setlength{\columnsep}{1cm}
 
@@ -48,6 +49,8 @@
 \newcommand{\namedlisting}[2][]{%
     \lstinputlisting[caption={\texttt{\detokenize{#2}}},#1]{#2}%
 }
+
+\newcommand*\lstinputpath[1]{\lstset{inputpath=#1}}
 
 \newcommand{\currentdata}{14 February 2015}
 \newtheorem{example}{Example}

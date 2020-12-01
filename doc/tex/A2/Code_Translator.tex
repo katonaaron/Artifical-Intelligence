@@ -1,0 +1,31 @@
+\chapter{Source Code: Translator} 
+\label{sec:code_translator}
+
+\lstinputpath{../logic/translator/}
+
+The following sections contain the source code of the Python program which translates Mace4 input files in the propositional logic form to the modular arithmetic equivalent. They can be found in the \verb|logic/translator| directory. The program is discussed in more details in section \ref{sec:translate}. 
+
+
+\section{Input data representation}
+
+\namedlisting[language=Python, label={lst:tr_commands}]{commands.py}
+
+
+\section{Parsing the Mace4 input file}
+
+\namedlisting[language=Python, label={lst:tr_input}]{input.py}
+
+
+\section{Creating/transforming Boolean ring expression trees}
+
+\namedlisting[language=Python, label={lst:tr_expression}]{expression.py}
+
+
+\section{Printing the result}
+
+\namedlisting[language=Python, label={lst:tr_output}]{output.py}
+
+
+\section{Main program}
+
+\namedlisting[language=Python, label={lst:tr_main}]{translator.py}

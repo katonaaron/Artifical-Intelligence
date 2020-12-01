@@ -1,0 +1,13 @@
+$ python translator.py -f input.txt
+assign(max_models, -1).
+set(arithmetic).
+assign(domain_size, 2).
+
+formulas(assumptions).
+        l1*t1 + 1 = 1.
+        l2*t2 + 1 = 1.
+        l1*t2 + m1 + 1 = 1.
+        l1*l2*t1*t2 + l1*l2*t1 + l1*l2*t2 + l1*t1*t2 + l1*t1 + l1*t2 + l2*t1*t2 + l2*t1 + l2*t2 + m2 + 1 = 1.
+        m1 + m2 = 1.
+end_of_list.
+

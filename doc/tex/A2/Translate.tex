@@ -1,6 +1,7 @@
 \section{Translating propositional logic to modular arithmetic programatically}
+\label{sec:translate}
 
-Our purpose was not to write a solver for the equations in the ring form. Instead, a translator program was written in Python which converts Mace4 input files from propositional logic to modular arithmetic.
+Our purpose was not to write a solver for the equations in the ring form. Instead, a translator program was written in Python which converts Mace4 input files in the propositional logic form to the modular arithmetic equivalent.
 
 For this purpose, the \textbf{SymPy} library was used which provides symbolic computation capabilities in Python. However it has some limitations: 
 
@@ -9,3 +10,214 @@ For this purpose, the \textbf{SymPy} library was used which provides symbolic co
 \item We could not find any possibility for achieving all the capabilities from \ref{sec:solve} at the same time, i.e. solving multi-variable equation on the Boolean ring.
 \end{itemize}
 
+
+
+
+
+\subsection{Data representation}
+
+\subsubsection{Input data representation}
+\label{sec:rep_input}
+
+A Mace4 input file contains a set of commands, formulas, clauses and lists. Currently the program supports only those input files that have only commands and formulas.
+
+In \nameref{lst:tr_commands} two  classes were defined to represent the commands and formula lists of the input file. These classes were created only for holding data. The correspondence between the input files and the classes can be seen below:
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[title=Mace4 command]
+assign(domain_size, 2).
+\end{lstlisting}
+
+\columnbreak
+
+\begin{lstlisting}[language=Python, title=Command object creation]
+Command(
+    name = "assign", 
+    args = ["domain_size", "2"])
+\end{lstlisting}
+
+\end{multicols}
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[title=Mace4 formulas]
+formulas(assumptions).
+    l1 -> -t1.
+    l2 -> -t2.
+end_of_list.
+\end{lstlisting}
+
+\columnbreak
+
+\begin{lstlisting}[language=Python, title=Formulas object creation]
+Formulas(
+    name = "assumptions", 
+    formula_list = [
+        "l1 -> -t1",
+        "l2 -> -t2"
+    ])
+\end{lstlisting}
+
+\end{multicols}
+
+Additionally, the Formulas class hold two class variables which represent its starting and ending keywords.
+
+\begin{lstlisting}[language=Python, numbers=none, title=Formulas class variables]
+class Formulas:
+    ...
+    commandName = "formulas"
+    endCommand = "end_of_list"
+    ...
+\end{lstlisting}
+
+\subsubsection{Expression tree representation}
+\label{sec:rep_expr}
+
+In order to represent expressions, which are expression trees, we used the already implemented classes of \textbf{SymPy}. The \verb|Expr| class is the base class for algebraic expressions. The \verb|Mul| and \verb|Add| classes inherit from this class and represent the multiplication and addition respectively. The operands of these operators can be a number a symbol or another expression.
+
+The \verb|Symbol| class represents a symbol, which is considered as an atomic expression, thus its also a descendant of \verb|Expr| and can be used as an operand for other expressions.
+
+Each expression tree can be considered as a standalone expression. Thus the composite pattern was applied in order to create expression trees.
+
+
+
+
+
+\subsection{Parsing the input file}
+
+\nameref{lst:tr_input} contains the functions used for parsing the input file.
+
+The \verb|processLines(lines)| function takes a list of lines (strings), processes them, and returns another list of lines as a result. The comments, whitespaces and empty lines are removed. Also, the lines of a Mace4 input file are logically separated by a ``.'' (dot). Therefore the lines are merged and split again, in order to change the separator to the dot.
+
+The \verb|linesToCommandsAndFormulas(lines)| function takes a list of lines (processed by the previous function) and transforms the data into a list of \verb|Command| and \verb|Formulas| objects. The correspondence between the lines and the classes was presented in \ref{sec:rep_input}. A command takes a single line, and its data can be obtained by splitting the line by ``('', ``)'' and ``,''. A formulas section takes multiple lines. Thus the lines between the starting and ending keywords are read before creating the \verb|Formulas| object.
+
+The parsing method presented above is not the most efficient solution, however it was implemented easier, thanks to the string and list manipulation functions in Python. 
+
+
+
+
+
+\subsection{Defining the rules}
+
+The first part of \nameref{lst:tr_expression} contains the definitions regarding the rules of the propositional logic in Mace4, and the rules of conversion to the ring form.
+
+\subsubsection{Operator precedence}
+
+Based on \cite{StanfordOperator}, the precedence of propositional logic operators was constructed. It can be observed in table \ref{table:operator_prec}. Additionally, the operators of the same type or the same priority are right associative. Therefore by constructing the expression tree from left to right, the associativity rules are satisfied.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ ccc } 
+ \hline
+ Operator & String form & Priority \\ 
+ \hline
+ Left parenthesis & \verb|(| & 0 \\ 
+ Right parenthesis & \verb|)| & 0 \\ 
+ Implication ($\rightarrow$) & \verb|->| & 1 \\ 
+ Biconditional ($\leftrightarrow$) & \verb|<->| & 1 \\ 
+ Inclusive disjunction ($\lor$) & \verb+|+ & 2 \\ 
+ Conjunction ($\land$)  & \verb|&| & 3 \\ 
+ Negation ($\neg$) & \verb|-| & 4 \\ 
+ \hline
+\end{tabular}
+\caption{The precedence of operators in propositional logic. The higher the priority number, the earlier is the operator evaluated.}
+\label{table:operator_prec}
+\end{table}
+
+\subsubsection{Symbols}
+
+In order to make difference between operators and operands while verifying the lines character-by-character, the function \verb|is_symbol_char(char)| was created which determines whether that character can be part of a symbol (operand) or not. 
+
+It was assumed that a symbol is composed by english letters and digits. It was further assumed, that no operator contain characters that can be part of a symbol.
+
+\subsubsection{Conversion to ring form}
+
+The conversion of propositions to expression trees of the ring form was based on table \ref{table:boolean_connectives}. This table was implemented in the \verb|operatorStringToExpression(operator, *operands)| function, which takes as parameter a string, representing an operator, and a list of operands. Using the \verb|Mul| and \verb|Add| classes of \textbf{SymPy} it returns an expression in which the operands are applied to the corresponding operators, according to the table.
+
+
+
+
+\subsection{Creating expression trees from propositions}
+
+The next part of \nameref{lst:tr_expression} contains the functionalities for transforming propositions into SymPy expression trees.
+
+The \verb|splitProposition(proposition)| function takes as argument a proposition as a string. It separates all the terms (operators + operands) of the string and returns them as a list of strings. The separation is done by verifying each character if it could be part of a symbol or not. If between two consecutive characters this verification returns a different result, they belong to different terms. Moreover if space or parenthesis is occurred, it is sure that the previous term terminated.
+
+The \verb|buildExpressionTree(proposition, substitutions=None)| function handles the main logic for the expression tree building. It obtains as argument a string proposition and extracts its terms using the previous function. Then each term is verified from left to right. 
+
+\begin{itemize}
+\item In case a left parenthesis occurred, it is pushed to the term stack.
+
+\item In case the term is an operand, a Symbol is created from it, and pushed to the node stack. 
+
+\item In case an operator is occurred, the term stack is popped until the TOS has a lower priority than the current operator. A new node is formed form the popped operator and the corresponding one (unary) or two (binary) operands from the node stack. The \verb|operatorStringToExpression| is used for the creation of the nodes. Finally the current term is pushed to the term stack.
+
+\item In case of a right parenthesis, the node creation occurs until a left parenthesis is reached in the term stack.
+
+\item After each term is considered, additional node creations are done until the term stack becomes empty. 
+
+\item Finally the node stack should contain only one element, the resulting expression tree.
+\end{itemize}
+
+The \verb|substitutions| parameter is a dictionary which defines which symbols should be substituted with which expression. If the parameter is given, whenever a term appears in the dictionary, teh corresponding expression will be pushed to the node stack. 
+
+The expression tree was created directly in the algebraic form. Another possibility would be to create a propositional logic expression tree, then convert the tree to the algebraic form, using the \verb|operatorStringToExpression| function.
+
+The resulting expression tree is in the algebraic form, the operators were translated just as they were defined in the table. However the result is unreadable and can be further simplified. Also, the automated simplification that occurred during the node creations followed only the rules of general algebra, therefore coefficients could appear with values greater than one, and also powers could appear.
+
+The \verb|simplifyExpression(expr, symbols)| function takes as argument an expression and the list of symbols appearing in it, and simplifies it according to the rules of the Boolean ring. A SymPy polynomial is created from the expression with the modulus parameter set to 2. This will result in the automated simplification of the expression, based on the parity of the coefficients. 
+
+However the powers still remain. We know that $x^2 = x$. Therefore $x$ on any power will result in $x$. Thus, to further simplify the equation, it was needed to manually replace a power operator (\verb|Pow| class) with its first argument, the base. The \verb|recurse_replace(expr, func)| and the \verb|rewrite(expr, new_args)| functions do the DFS traversal and the replacing. Finally the modulus is set again to 2, in order to trigger further simplifications. The resulting expression is extracted from the polynomial.
+
+\begin{lstlisting}[language=Python, numbers=none, caption=Simplification on the Boolean ring using SymPy]
+def simplifyExpression(expr, symbols):
+    ...
+    p = Poly(expr, symbols, modulus=2)
+    p = recurse_replace(p, rewrite).set_modulus(2)
+
+    return p.as_expr()
+\end{lstlisting}
+
+
+
+
+\subsection{Creating and transformation of expressions}
+
+The last part of \nameref{lst:tr_expression} contains functions for further transforming the expressions, and also a wrapper function which puts together all the functionalities of this file.
+
+The \verb|formulasToExpressionTree(formulas, merge, simplify, collect, substitutions)| function takes as parameter an object of type \verb|Formulas| and changes its \verb|formula_list| field from a list of strings to a SymPy expression (tree). Returns the resulted object.
+
+The \verb|simplify| flag indicates whether or not to simplify the resulted expressions using the \verb|simplifyExpression| function described above
+
+If \verb|collect| flag is set, the terms of the expressions are grouped together, based on the frequency of the symbols. An expression is first grouped by the most frequent term, then by the second most frequent, and so on. This heuristic was used in order to minimize the length of the resulting expression. The \verb|getSymbolsByDecreasingFrequency(expression)| returns the symbols of an expression in decreasing order of frequency, and the \verb|collectExpression(expression)| function does the collecting using the previous function and the \verb|sympy.collect| function.
+
+If the \verb|merge| flag is set, all the expressions of a \verb|Formulas|, is multiplied together to form a single expression according to the equation \ref{eq:one_eq}.
+
+The \verb|substitutions| argument is the same as discussed before, and is forwarded directly to the \verb|buildExpressionTree| function. 
+
+In order to create the substitutions dictionary, the \verb|createSubstitutions(predicates)| function can be used which takes a list of strings, each string having the form $a \leftrightarrow f(b)$, where $a$ is a symbol, and $f(b)$ is a predicate. The resulting dictionary is created by associating to each $a$ symbol (string) an expression, obtained by building an algebraic expression tree from $f(b)$ using the \verb|buildExpressionTree| function.
+
+
+
+
+\subsection{Printing the result}
+
+The \nameref{lst:tr_output} file contains the functions which prints the \verb|Command| and \verb|Formulas| classes in a format that can be given as input for Mace4.
+
+The commands that have as first argument ``arithmetic'' or ``domain\_size'' are ignored, because the program sets these values automatically in order to ensure a correct input for Mace4.
+
+\begin{lstlisting}[numbers=none,caption=The commands that are automatically inserted by the program]
+assign(domain_size, 2).
+assign(max_models, -1).
+\end{lstlisting}
+
+
+
+
+
+\subsection{The main program}
+
+The \nameref{lst:tr_main} file contains the main function, which reads the command line arguments and executes the operations using the previously defined functions, finally printing the result.
+
+For the list of substitutions the program consider only those predicates that are placed inside a \verb|formulas(substitutions).| list. These predicates are removed from the output.
