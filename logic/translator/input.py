@@ -78,16 +78,16 @@ def linesToCommandsAndFormulas(lines):
     commands = []
     formulas = []
     formulaName = None
-    statements = []
+    propositions = []
 
     for line in lines:
 
         if formulaName:
             if line == Formulas.endCommand:
-                formulas.append(Formulas(formulaName, statements))
+                formulas.append(Formulas(formulaName, propositions))
                 formulaName = None
             else:
-                statements.append(line)
+                propositions.append(line)
         else:
             try:
                 name, rest = line.split("(", 1)
@@ -98,7 +98,7 @@ def linesToCommandsAndFormulas(lines):
 
             if name == Formulas.commandName:
                 formulaName = args[0]
-                statements = []
+                propositions = []
             else:
                 command = Command(name, args)
                 commands.append(command)

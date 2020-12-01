@@ -103,5 +103,5 @@ if __name__ == '__main__':
     try:
         main(sys.argv[1:])
     except ValueError as e:
-        print 'Error:', e
+        sys.stderr.write('Error: ' + str(e))
         sys.exit(1)
