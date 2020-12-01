@@ -1,14 +1,110 @@
 \section{Solving lady and tigers with algebra} 
+\label{sec:puzzles}
+
+In this section ``The Lady or Tiger'' puzzles are solved using both propositional logic and modular arithmetics in order to compare the two methods.
+
+\subsubsection{Mace4}
+\label{sec:mace4_flaw}
+
+For verifying the correctness of the formulas written to solve the puzzle, we used mace4. Mace4 can solve the puzzles for both types of notations.
+
+For the modular arithmetic input files we specified the following commands at the beginning, in order to configure arithmetic operations on the Boolean ring:
+
+\begin{lstlisting}[numbers=none]
+set(arithmetic).
+assign(domain_size, 2).
+\end{lstlisting}
+
+However, mace4 has a flaw when using it for expressions on the Boolean ring. There are some cases in which mace4 does not give any result. To solve this, one must wrap those expressions with ``mod 2''. An example can be seen below:
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Input file that can be solved by Mace4]
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions). 
+    m1 + m2 = 1.
+end_of_list.
+\end{lstlisting}
+
+\columnbreak
+
+\begin{lstlisting}[numbers=none,title=Mace4 output]
+interpretation( 2, [number = 1,seconds = 0], [
+    function(m1, [0]),
+    function(m2, [1])]).
+interpretation( 2, [number = 2,seconds = 0], [
+    function(m1, [1]),
+    function(m2, [0])]).
+\end{lstlisting}
+
+\end{multicols}
+
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Input file that cannot be solved by Mace4]
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions). 
+    m1 + m2 + 1 = 0.
+end_of_list.
+\end{lstlisting}
+
+\columnbreak
+
+\begin{lstlisting}[numbers=none,title=Mace4 output]
+=== Mace4 starting on domain size 2. ===
+
+------ process 62347 exit (exhausted) ------
+\end{lstlisting}
+
+\end{multicols}
+
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Input file made to be solvable by Mace4]
+set(arithmetic).
+assign(domain_size, 2).
+assign(max_models, -1).
+
+formulas(assumptions). 
+    (m1 + m2 + 1) mod 2 = 0.
+end_of_list.
+\end{lstlisting}
+
+\columnbreak
+
+\begin{lstlisting}[numbers=none,title=Mace4 output]
+=== Mace4 starting on domain size 2. ===
+
+------ process 62531 exit (all_models) ------
+interpretation( 2, [number = 1,seconds = 0], [
+    function(m1, [0]),
+    function(m2, [1])]).
+interpretation( 2, [number = 2,seconds = 0], [
+    function(m1, [1]),
+    function(m2, [0])]).
+\end{lstlisting}
+
+\end{multicols}
+
+For simplicity, we will omit the wrapping by ``mod 2'' in this chapter.
+
+The source files in the Mace4 input format can be found in annex \ref{sec:code_puzzle}.
 
 
 
-
-
-\subsection{The first trial}
 
 
 
 \subsubsection{Representation}
+
 
 In \textbf{propositional logic} we can represent the state of the $i$-th room by the following predicates:
 
@@ -40,14 +136,24 @@ ri = [[``\textrm{There is a lady in room } i"]] = 1 +  [[``\textrm{There is a ti
 
 \item 
 \begin{math}
-mi = [[``\textrm{The message on the door of room } i \textrm{ is true}"]]
+mi = [[``\textrm{Message on the door of room } i"]]
 \end{math}
  
 \end{itemize}
 
 In this representation the appearance of a lady and a tiger in the same room is implicitly exclusive.
 
+These representations will be used in the following puzzles, unless it is specified otherwise.
 
+
+
+
+
+
+
+
+
+\subsection{The first trial}
 
 \subsubsection{Knowledge base}
 
@@ -57,11 +163,11 @@ The following statements are given:
 
 \item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
 
-\item \textbf{Message on door 1:} In this room there is a lady, and in the other room there is a tiger.
+\item \textbf{Message on door 1:} In this room there is a lady, and in the other room there is a tiger
 
-\item \textbf{Message on door 2:} In one of these rooms there is a lady, and in one of these rooms there is a tiger.
+\item \textbf{Message on door 2:} In one of these rooms there is a lady, and in one of these rooms there is a tiger
 
-\item One of the messages is true, but the other one is false.
+\item One of the messages is true, but the other one is false
 
 \end{enumerate}
 
@@ -120,12 +226,12 @@ The advantage of the modular arithmetics is that it can be resolved by algebraic
 The system of equations representing the knowledge base:
 
 \begin{numcases}{}
- m1 = r1 * (r2 + 1) \label{eq:first_m1}\\
- m2 = r1 + r2 \label{eq:first_m2}\\
- m1 + m2 = 1 \label{eq:first_m1m2}
+ m1 = r1 * (r2 + 1) \label{eq:p1_m1}\\
+ m2 = r1 + r2 \label{eq:p1_m2}\\
+ m1 + m2 = 1 \label{eq:p1_m1m2}
 \end{numcases}
 
-By replacing $m1$ and $m2$ in \ref{eq:first_m1m2} we obtain:
+By replacing $m1$ and $m2$ in \ref{eq:p1_m1m2} we obtain:
 
 \begin{center}
 \begin{math}
@@ -160,3 +266,1424 @@ In order to satisfy the equation, both operands of the multiplication must be 1.
 \end{math} 
 \end{center}
 
+
+
+
+
+
+
+
+\subsection{The Second Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} At least one of these rooms contains a lady.
+
+\item \textbf{Message on door 2:} A tiger is in the other room.
+
+\item The messages are either both true or both false.
+
+\end{enumerate}
+
+
+The first message tells us, that either one of the rooms contains a lady, or both of the rooms contain a lady.
+
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> (l1 | l2).
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 * r2 + r1 + r2.
+\end{lstlisting}
+
+\end{multicols}
+
+
+One can observe that the logical OR operator is replaced by multiplying the two terms, then adding each one of them. 
+
+
+The second message tells us, that in the other room (i.e.: the first room) there is a tiger.
+Here the negation will be replaced with an addition by one.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> t2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = r1 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that the truth value of the two messages is the same.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = m2.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 * r2 + r1 + r2 \label{eq:p2_m1}\\
+ m2 = r1 + 1 \label{eq:p2_m2}\\
+ m1 = m2 \label{eq:p2_m1m2}
+\end{numcases}
+
+By replacing $m1$ and $m2$ in \ref{eq:p2_m1m2} we obtain:
+
+\begin{center}
+\begin{math}
+ r1 * r2 + r1 + r2 = r1 + 1
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+ r2 * (r1 + 1) = 1
+\end{math} 
+\end{center}
+
+
+In order to satisfy the equation, both operands of the multiplication must be 1. Otherwise the product would be 0. Therefore the result will be:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 0\\
+ r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+
+\subsection{The Third Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} Either a tiger is in this room or a lady is in the other room.
+
+\item \textbf{Message on door 2:} A lady is in the other room.
+
+\item The messages are either both true or both false.
+
+\end{enumerate}
+
+
+The first message tells us, that either a tiger is in the first room, or a lady is in the second room. By double negation and De Morgan's Law we obtain: "It's not true that a lady is in the first room and a tiger in the second".
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> t1 | l2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 * (r2 + 1) + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+The second message tells us, that in the other room (i.e.: the first room) there is a lady.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> l1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = r1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that the truth value of the two messages is the same.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = m2.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 * (r2 + 1) + 1 \label{eq:p3_m1}\\
+ m2 = r1 \label{eq:p3_m2}\\
+ m1 = m2 \label{eq:p3_m1m2}
+\end{numcases}
+
+By replacing $m1$ and $m2$ in \ref{eq:p3_m1m2} we obtain:
+
+\begin{center}
+\begin{math}
+ r1 * (r2 + 1) + 1 = r1
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+ r2 * r1 = 1
+\end{math} 
+\end{center}
+
+
+In order to satisfy the equation, both operands of the multiplication must be 1. Otherwise the product would be 0. Therefore the result will be:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 1\\
+ r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+
+
+\subsection{The Fourth Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} Both rooms contain ladies.
+
+\item \textbf{Message on door 2:} Both rooms contain ladies.
+
+
+\item If a lady is in the first room, then the message is true, but if a tiger is in it, then the message is false. For the second room, the rules are reversed, i.e. if a lady is in the second room, then the message is false otherwise the message is true.
+
+\end{enumerate}
+
+
+The first and the second messages both tell us, that both rooms contain a lady.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> l1 & l2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 * r2.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> m1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = m1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, if a lady is in the first room, the first message is true, if a lady is in the second room, the second message is false.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 -> m1. t1 -> -m1.
+l2 -> -m2. t2 -> m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+r1 = m1.
+r2 = m2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 * r2 \label{eq:p4_m1}\\
+ m2 = m1 \label{eq:p4_m2}\\
+ r1 + m1 = 0 \label{eq:p4_r1m1}\\
+ r2 + m2 = 1 \label{eq:p4_r2m2}
+\end{numcases}
+
+By replacing $m1$ in \ref{eq:p4_r1m1} and $m2$ in \ref{eq:p4_r2m2} we obtain:
+
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 + r1 * r2 = 0\\
+ r2 + r1 * r2 = 1
+ \end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 * (r2 + 1) = 0\\
+ r2 * (r1 + 1) = 1
+ \end{cases}
+\end{math} 
+\end{center}
+
+
+In the second equation, in order to satisfy the it, both operands of the multiplication must be 1. Otherwise the product would be 0. Therefore the result will be:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 0\\
+ r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which satisfies the first equation as well.
+
+
+
+
+
+
+
+\subsection{The Fifth Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} At least one of the rooms contains a lady.
+
+\item \textbf{Message on door 2:} The other room contains a lady.
+
+
+\item If a lady is in the first, then the message is true, but if a tiger is in it, then the message is false. For the second room, the rules are reversed, i.e. if a lady is in the room, then the message is false otherwise the message is true.
+
+\end{enumerate}
+
+
+The first message tells us, that either only one room contains a lady, or both rooms contain ladies.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> l1 | l2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 * r2 + r1 + r2.
+\end{lstlisting}
+
+\end{multicols}
+
+
+The second message tells us, that in the other room (i.e.: the first room) there is a lady.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> l1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = r1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, if a lady is in the first room, the first message is true, if a lady is in the second room, the second message is false.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 -> m1. t1 -> -m1.
+l2 -> -m2. t2 -> m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+r1 = m1.
+r2 = m2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 * r2 + r1 + r2 \label{eq:p5_m1}\\
+ m2 = r1 \label{eq:p5_m2}\\
+ r1 + m1 = 0 \label{eq:p5_r1m1}\\
+ r2 + m2 = 1 \label{eq:p5_r2m2}
+\end{numcases}
+
+By replacing $m1$ in \ref{eq:p5_r1m1} and $m2$ in \ref{eq:p5_r2m2} we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 + r1 * r2 + r1 + r2 = 0\\
+ r2 + r1 = 1
+ \end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r2 * (r1 + 1) = 0\\
+ r2 = r1 + 1
+ \end{cases}
+\end{math} 
+\end{center}
+
+
+Starting from the second equation, the two option would be r1 = 0 and r2 =1 or r1 =1 and r2 = 0. The first option does not satisfy the first equation, which means the result will be:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 1\\
+ r2 = 0
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+
+
+\subsection{The Sixth Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} It makes no difference which room you pick.
+
+\item \textbf{Message on door 2:} There is a lady in the other room.
+
+
+\item If a lady is in the first, then the message is true, but if a tiger is in it, then the message is false. For the second room, the rules are reversed, i.e. if a lady is in the room, then the message is false otherwise the message is true.
+
+\end{enumerate}
+
+
+The first message tells us, that either both rooms contain tigers or both rooms contain ladies.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> (l1 & l2) | (t1 & t2).
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 + r2 + 1.
+\end{lstlisting}
+\end{multicols}
+
+The second message tells us, that in the other room (i.e.: the first room) there is a lady.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> l1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = r1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, if a lady is in the first room, the first message is true, if a lady is in the second room, the second message is false.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 -> m1. t1 -> -m1.
+l2 -> -m2. t2 -> m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+r1 = m1.
+r2 = m2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 + r2 + 1 \label{eq:p6_m1}\\
+ m2 = r1 \label{eq:p6_m2}\\
+ r1 = m1 \label{eq:p6_r1m1}\\
+ r2 = m2 + 1 \label{eq:p6_r2m2}
+\end{numcases}
+
+By replacing $m1$ in \ref{eq:p6_r1m1} and $m2$ in \ref{eq:p6_r2m2} we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = r1 + r2 + 1\\
+ r2 = r1 + 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r2 = 1\\
+ r1 = r2 + 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which gives us the following result:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 0\\
+ r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+\subsection{The Seventh Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message on door 1:} It makes a difference which room you pick.
+
+\item \textbf{Message on door 2:} There is a lady in the other room.
+
+
+\item If a lady is in the first, then the message is true, but if a tiger is in it, then the message is false. For the second room, the rules are reversed, i.e. if a lady is in the room, then the message is false otherwise the message is true.
+
+\end{enumerate}
+
+
+The first message tells us, that one room contains a lady and the other a tiger.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> (l1 & t2) | (t1 & l2).
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = r1 + r2.
+\end{lstlisting}
+\end{multicols}
+
+The second message tells us, that in the other room (i.e.: the first room) there is a lady.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> l1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = r1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, if a lady is in the first room, the first message is true, if a lady is in the second room, the second message is false.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 -> m1. t1 -> -m1.
+l2 -> -m2. t2 -> m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+r1 = m1.
+r2 = m2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 + r2 \label{eq:p7_m1}\\
+ m2 = r1 \label{eq:p7_m2}\\
+ r1 = m1 \label{eq:p7_r1m1}\\
+ r2 = m2 + 1 \label{eq:p7_r2m2}
+\end{numcases}
+
+By replacing $m1$ in \ref{eq:p7_r1m1} and $m2$ in \ref{eq:p7_r2m2} we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+  r1 = r1 + r2\\
+  r2 = r1 + 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+  r2 = 0\\
+ r2 = r1 + 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+Which gives us the following result:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 1\\
+ r2 = 0
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+
+
+\subsection{The Eighth Trial}
+
+\subsubsection{Representation}
+
+For this puzzle, for simplicity we took four messages, which represent the following:
+
+\begin{center}
+
+\item $mij$: Message $i$ is on the door of room $j$ and it is true
+ 
+\end{center}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item In this puzzle we do not know which message corresponds to which door.
+
+\item Each of the two rooms contained either a lady or a tiger, but it could be that there were tigers in both rooms, or ladies in both rooms.
+
+\item \textbf{Message 1:} This room contains a tiger.
+
+\item \textbf{Message on door 2:} Both rooms contain tigers.
+
+
+\item If a lady is in the first, then the message is true, but if a tiger is in it, then the message is false. For the second room, the rules are reversed, i.e. if a lady is in the room, then the message is false otherwise the message is true.
+
+\end{enumerate}
+
+The first message tells us, that the room contains a tiger.
+If the message is on the first door:
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m11 <-> t1.
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m11 = r1 + 1
+\end{lstlisting}
+\end{multicols}
+
+
+If the message is on the second door:
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m12 <-> t2.
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m12 = r2 + 1
+\end{lstlisting}
+\end{multicols}
+
+The second message tells us, that both rooms contain tigers.
+In this case, for the representation, it does not matter on which door the message is. 
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m21 <-> t1 & t2.
+m22 <-> m21.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m21 = (r1 + 1) * (r2 + 1).
+m22 = m21.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, if a lady is in the first room, the message on the first door is true, if a lady is in the second room, the message on the second door is false. For the tigers it is the other way around, if the tiger is in the first room, the message on that door is false. If the tiger is in the second room, the message on that door is true.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 -> m11 | m21. t1 -> -m11 | -m21.
+l2 -> -m12 | -m22. t2 -> m12 | m22.
+\end{lstlisting}
+
+\columnbreak
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+(r2 + 1)*(m12 * m22 + m12 + m22) + r2 = 1.
+r2 * ((m12 + 1) * (m22 + 1) + m12 + m22) + r2 + 1 = 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m11 = r1 + 1 \label{eq:first_m11}\\
+ m12 = r2 + 1 \label{eq:first_m12}\\
+ m21=(r1 + 1) * (r2 + 1) \label{eq:first_m21}\\
+ m22 = m21\label{eq:first_m22}\\
+ r1 * ( m11 * m21 + m11 + m21) + r1 + 1 = 1\label{eq:first8_m1m2}\\
+ (r1 + 1) * ((m11 + 1) * ( m21 + 1) + m11 + m21) + r1 = 1 \label{eq:second8_m1m2}\\
+ (r2 + 1) * (m12 * m22 + m12 + m22) + r2 = 1 \label{eq:third_m1m2}\\
+ r2 * ((m12 + 1) * (m22 + 1) + m12 + m22) + r2 + 1 = 1 \label{eq:fourth_m1m2}
+\end{numcases}
+
+By replacing $m11$, $m12$, $m21$  and $m22$ in \ref{eq:first8_m1m2},  \ref{eq:second8_m1m2}, \ref{eq:third_m1m2}, \ref{eq:fourth_m1m2} we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+  r1 * ((r1 + 1) * ((r1 + 1) * (r2 + 1)) + r1 + 1 + (r1 + 1) * (r2 + 1)) + r1 + 1 = 1\\
+ (r1 + 1) * (r1 * ((r1 + 1) * (r2 + 1) + 1) + r1 + (r1 + 1) * (r2 + 1)) + r1 = 1\\
+ (r2 + 1) * ((r2 + 1) * ((r1 + 1) * (r2 + 1)) + r2 + 1 + (r1 + 1) * (r2 + 1)) + r2 = 1\\
+ r2 * (r2 * ((r1 + 1) * (r2 + 1) + 1) + r2 + 1 + (r1 + 1) * (r2 + 1)) + r2 + 1 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+r1 * ( r1 * r2 + r1 + r1 * r2 + r1 + r1 * r2 + r1 + r2 + 1 + r1 + 1 + r1 * r2 + r1 + r2 + 1) + r1 + 1 = 1\\
+(r1 + 1) * (r1 * r2 + r1 + r1 * r2 + r1 + r1 * r2 + r1 + r2) + r1 = 1\\
+(r2 + 1) * (r1 * r2 + r1 * r2 + r2 + r2 +r1 * r2 + r1 + r2 + 1 + r2 + 1 + r1 * r2 + r1 +  r2 + 1) + r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+Knowing that x + x = 0 and x * x = x, we get the following equations:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+  r1 + 1 = 1\\
+ r1 * r2 + r1 + r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+We get the following result: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 0\\
+ r2 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+\subsection{The Ninth Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Now we have three rooms: one contains a lady, and the other two contain a tiger 
+
+\item \textbf{Message on door 1:} A tiger is in this room.
+
+\item \textbf{Message on door 2:} A lady is in this room.
+
+\item \textbf{Message on door 3:} A tiger is in room 2.
+
+
+\item At most one of the three signs is true.
+
+\end{enumerate}
+
+
+The first statement tells us, that one room contains a lady and the other two contain tigers.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 & t2 & t3 | l2 & t1 & t3 | l3 & t1 & t2.
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+r1 * r2 * r3  = 0.
+r1 + r2 + r3  = 1.
+\end{lstlisting}
+\end{multicols}
+
+The second statement (first message) tells us, that the room contains a tiger.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> t1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+m1 = r1 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+The third statement (second message) tells us, that the room contains a lady.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> l2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+m2 = r2.
+\end{lstlisting}
+
+\end{multicols}
+
+The fourth statement (third message) tells us, that the second room contains a tiger.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m3 <-> t2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+m3 = r2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, at most one message is true.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 -> -m2 & -m3.
+m2 -> -m3.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetical]
+m1 * m2 + m1 * m3 + m2 * m3 + 1 = 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r1 + 1 \label{eq:p9_m1}\\
+ m2 = r2 \label{eq:p9_m2}\\
+ m3 = r2 + 1 \label{eq:p9_m3}\\
+ m1 * m2 + m1 * m3 + m2 * m3 + 1 = 1\label{eq:p9_m1m2m3}\\
+ r1 * r2 * r3  = 0\label{eq:p9_r1r2r3}\\
+ r1 + r2 + r3  = 1\label{eq:p9_r1r2r3_p}
+\end{numcases}
+
+By replacing $m1$, $m2$ and $m3$ in \ref{eq:p9_m1m2m3} we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ (r1 + 1) * r2 + (r1 + 1) * (r2 + 1) + r2 * (r2 + 1) = 1\\
+ r1 * r2 * r3  = 0\\
+ r1 + r2 + r3  = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 * r2 + r2 + r1 * r2 + r1 + r2 + 1 + r2 * r2 + r2 + 1 = 1\\
+ r1 * r2 * r3  = 0\\
+ r1 + r2 + r3  = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Knowing that x + x = 0 and x * x = x, we get:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 1\\
+ r2 * r3 = 0\\
+ r2 + r3 = 0
+\end{cases}
+\end{math} 
+\end{center}
+
+Which gives us the following result:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 1\\
+ r2 = 0\\
+ r3 = 0
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+
+\subsection{The Tenth Trial}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Now we have three rooms: one contains a lady, and the other two contain a tiger 
+
+\item \textbf{Message on door 1:} A tiger is in this room.
+
+\item \textbf{Message on door 2:} A lady is in this room.
+
+\item \textbf{Message on door 3:} A tiger is in room 2.
+
+
+\item The message on the room containing the lady is true, and from the other two, at least one is false.
+
+\end{enumerate}
+
+
+The first statement tells us, that one room contains a lady and the other two contain tigers.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 & t2 & t3 | l2 & t1 & t3 | l3 & t1 & t2.
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+r1 * r2 * r3  = 0.
+r1 + r2 + r3  = 1.
+\end{lstlisting}
+\end{multicols}
+
+The second statement (first message) tells us, that a tiger is in room 2.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> t2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+m1 = r2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+
+The third statement (second message) tells us, that the room contains a tiger.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> t2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+m2 = r2 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+The fourth statement (third message) tells us, that the first room contains a tiger.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m3 <-> t1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+m3 = r1 + 1.
+\end{lstlisting}
+
+\end{multicols}
+
+For the last statement we simply have to specify that, the message on the room containing the lady is always true, and from the other two messages at least one is false.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+l1 -> m1.
+l2 -> m2.
+l3 -> m3.
+m1 -> -m2 | -m3.
+m2 -> -m1 | -m3.
+m3 -> -m1|-m2.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetical]
+r1 * (m1 + 1) = 0.
+r2 * (m2 + 1) = 0.
+r3 * (m3 + 1) = 0.
+m1 * m2 * m3 = 0.
+(m1 + 1) * (m2 + 1) * (m3 + 1) = 0.
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+ m1 = r2 + 1 \label{eq:p10_m1}\\
+ m2 = r2 + 1 \label{eq:p10_m2}\\
+ m3 = r1 + 1 \label{eq:p10_m3}\\
+ r1 * (m1 + 1) = 0 \label{eq:p10_r1m1}\\
+ r2 * (m2 + 1) = 0 \label{eq:p10_r2m2}\\
+ r3 * (m3 + 1) = 0 \label{eq:p10_r3m3}\\
+ m1 * m2 * m3 = 0 \label{eq:p10_m1m2m3}\\
+ (m1 + 1) * (m2 + 1) * (m3 + 1) = 0 \label{eq:p10_m1m2m3_neg}\\
+ r1 * r2 * r3  = 0 \label{eq:p10_r1r2r3}\\
+ r1 + r2 + r3  = 1 \label{eq:p10_r1r2r3_p}
+\end{numcases}
+
+By replacing $m1$  and $m2$ in \ref{eq:p10_r1m1}, \ref{eq:p10_r2m2}, \ref{eq:p10_r3m3}, \ref{eq:p10_m1m2m3} and \ref{eq:p10_m1m2m3_neg} we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+  r1 * r2 = 0\\
+ r2 = 0\\
+ r3 * r1 = 0\\
+ r1 * r2 + r1 + r2 + 1 = 0\\
+ r1 * r2 = 0\\
+ r1 * r2 * r3  = 0\\ 
+ r1 + r2 + r3  = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+Which can be rewritten as: 
+
+\begin{center}
+\begin{math}
+\begin{cases}
+  r3 * r1 = 0\\
+ r1 + 1 = 0\\
+ r1 + r3 = 1
+\end{cases}
+\end{math} 
+\end{center}
+
+
+Which gives us the following result:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ r1 = 1\\
+ r2 = 0\\
+ r3 = 0
+\end{cases}
+\end{math} 
+\end{center}
+
+
+
+
+
+
+\subsection{Representation for empty rooms}
+
+From now on, besides lady and tiger we will also have empty rooms. The notations will be similar:
+
+in \textbf{propositional logic} we will represent the state of the i-th room in the following way:
+
+\begin{itemize}
+
+\item $li$: There is a lady in room $i$.
+\item $ti$: There is a tiger in room $i$.
+\item $ei$: Room $i$ is empty.
+\item $mi$: Message on the door of room $i$
+ 
+\end{itemize}
+
+Then we must specify that if a lady is in a room, then there can not be a tiger and neither can it be empty. Same rules apply if a tiger is in the room, there can not be a lady in that room and that room can not be empty:
+
+\begin{lstlisting}[numbers=none]
+ l1 -> -t1 & -e1.
+ l2 -> -t2 & -e2.
+ l3 -> -t3 & -e3.
+ t1 -> -e1.
+ t2 -> -e2.
+ t3 -> -e3.
+\end{lstlisting}
+
+
+For \textbf{modular arithmetic} we define:
+
+\begin{itemize}
+    \item li = [["There is a lady in room i"]]
+    \item ti = [["There is a tiger in room i"]]
+    \item ei = [[Room i is empty"]]
+    \item mi = [["Message on the door of room i]]
+\end{itemize}
+
+This representation will no longer exclude the possibility of a tiger and lady in the same room, so we have to specify it explicitly.
+
+\subsection{First, Second, and Third Choice}
+
+\subsubsection{Knowledge base}
+
+\begin{enumerate}
+
+\item Now we have three rooms: one contains a lady, another one contains a tiger, and the third is empty 
+
+\item \textbf{Message on door 1:} Room three is empty.
+
+\item \textbf{Message on door 2:} The tiger is in room one.
+
+\item \textbf{Message on door 3:} This room is empty.
+
+
+\item The message on door of the room where the lady is is true, the message where the tiger is is false, and the message on the room that is empty can be either true or false.
+
+\end{enumerate}
+
+The first statement tells us, that only one room contains a lady, one room contains a tiger and one room is empty.
+
+
+\begin{multicols}{2}
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+
+
+l1 | l2 | l3.
+l1 -> -l2 & -l3.
+l2 -> -l1 & -l3.
+l3 -> -l1 & -l2.
+ 
+
+
+ 
+t1| t2 | t1.
+t1 -> -t2 & -t3.
+t2 -> -t1 & -t3.
+t3 -> -t2 & -t1.
+
+
+
+
+e1 | e2 | e3.
+e1 -> -e2 & -e3.
+e2 -> -e1 & -e3.
+e3 -> -e2 & -e1.
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+l1 * l2 * l3  = 0.
+l1 + l2 + l3  = 1.
+
+t1 * t2 * t3  = 0.
+t1 + t2 + t3  = 1.
+
+e1 * e2 * e3  = 0.
+e1 + e2 + e3  = 1.
+
+l1 * ((t1 + 1) * (e1 + 1)) + l1 + 1 = 1.
+l2 * ((t2 + 1) * (e2 + 1)) + l2 + 1 = 1.
+l3 * ((t3 + 1) * (e3 + 1)) + l3 + 1 = 1.
+
+t1 * ((e1 + 1) * (l1 + 1)) + t1 + 1 = 1.
+t2 * ((e2 + 1) * (l2 + 1)) + t2 + 1 = 1.
+t3 * ((e3 + 1) * (l3 + 1)) + t3 + 1 = 1.
+
+\end{lstlisting}
+\end{multicols}
+
+The second statement tells us, that room three is empty.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m1 <-> e3.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m1 = e3.
+\end{lstlisting}
+
+\end{multicols}
+
+
+The third statement tells us, that room one contains a tiger.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m2 <-> t1.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m2 = t1.
+\end{lstlisting}
+
+\end{multicols}
+
+The fourth statement tells us, that the room is empty.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+m3 <-> e3.
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetics]
+m3 = e3.
+\end{lstlisting}
+
+\end{multicols}
+
+
+
+For the last statement we simply have to specify that, if a lady is the room, the  message is true, if a tiger is in the room, the message is false
+For empty rooms, we do not have to write any conditions, because they can be either true or false.
+
+\begin{multicols}{2}
+
+\begin{lstlisting}[numbers=none,title=Propositional logic]
+ l1 -> m1.
+ l2 -> m2.
+ l3 -> m3.
+ 
+ t1 -> -m1.
+ t2 -> -m2.
+ t3 -> -m3.
+
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none,title=Modular arithmetic]
+l1 * m1 + l1 + 1 = 1.
+l2 * m2 + l2 + 1 = 1.
+l3 * m3 + l3 + 1 = 1.
+
+t1 * (m1 + 1) + t1 + 1 = 1.
+t2 * (m2 + 1) + t2 + 1 = 1.
+t3 * (m3 + 1) + t3 + 1 = 1.
+
+\end{lstlisting}
+
+\end{multicols}
+
+
+\subsubsection{Resolution}
+
+The system of equations representing the knowledge base:
+
+\begin{numcases}{}
+l1 * l2 * l3  = 0\\
+l1 + l2 + l3  = 1\\
+t1 * t2 * t3  = 0\\
+t1 + t2 + t3  = 1\\
+e1 * e2 * e3  = 0\\
+e1 + e2 + e3  = 1\\
+l1 * ((t1 + 1) * (e1 + 1)) + l1 + 1 = 1\\
+l2 * ((t2 + 1) * (e2 + 1)) + l2 + 1 = 1\\
+l3 * ((t3 + 1) * (e3 + 1)) + l3 + 1 = 1\\
+t1 * ((e1 + 1) * (l1 + 1)) + t1 + 1 = 1\\
+t2 * ((e2 + 1) * (l2 + 1)) + t2 + 1 = 1\\
+t3 * ((e3 + 1) * (l3 + 1)) + t3 + 1 = 1\\
+m1 = e3\\
+m2 = t1\\
+m3 = e3\\
+l1 * m1 + l1 + 1 = 1\label{eq:rel_l1m1}\\
+l2 * m2 + l2 + 1 = 1\label{eq:rel_l2m2}\\
+l3 * m3 + l3 + 1 = 1\label{eq:rel_l3m3}\\
+t1 * (m1 + 1) + t1 + 1 = 1\label{eq:rel_t1m1}\\
+t2 * (m2 + 1) + t2 + 1 = 1\label{eq:rel_t2m2}\\
+t3 * (m3 + 1) + t3 + 1 = 1\label{eq:rel_t3m3}
+\end{numcases}
+
+By replacing $m1$, $m2$ and $m3$ in \ref{eq:rel_l1m1}, \ref{eq:rel_l2m2}, \ref{eq:rel_l3m3}, \ref{eq:rel_t1m1}, \ref{eq:rel_t2m2}, \ref{eq:rel_t3m3}, we obtain:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ l1 * l2 * l3  = 0.\\
+l1 + l2 + l3  = 1.\\
+t1 * t2 * t3  = 0.\\
+t1 + t2 + t3  = 1.\\
+e1 * e2 * e3  = 0.\\
+e1 + e2 + e3  = 1.\\
+l1 * ((t1 + 1) * (e1 + 1)) + l1 + 1 = 1.\\
+l2 * ((t2 + 1) * (e2 + 1)) + l2 + 1 = 1.\\
+l3 * ((t3 + 1) * (e3 + 1)) + l3 + 1 = 1.\\
+t1 * ((e1 + 1) * (l1 + 1)) + t1 + 1 = 1.\\
+t2 * ((e2 + 1) * (l2 + 1)) + t2 + 1 = 1.\\
+t3 * ((e3 + 1) * (l3 + 1)) + t3 + 1 = 1.\\
+l1 * e3 + l1 + 1 = 1.\\
+l2 * t1 + l2 + 1 = 1.\\
+l3 * e3 + l3 + 1 = 1.\\
+t1 * (e3 + 1) + t1 + 1 = 1.\\
+t2 * (t1 + 1) + t2 + 1 = 1.\\
+t3 * (e3 + 1) + t3 + 1 = 1.\\
+\end{cases}
+\end{math} 
+\end{center}
+
+
+Which, after the right calculations,  gives us the following result:
+
+\begin{center}
+\begin{math}
+\begin{cases}
+ l1 = 1\\
+ l2 = 0\\
+ l3 = 0\\
+ t1 = 0\\
+ t2 = 1\\
+ t3 = 0\\
+ e1 = 0\\
+ e2 = 0\\
+ e1 = 1
+\end{cases}
+\end{math} 
+\end{center}
