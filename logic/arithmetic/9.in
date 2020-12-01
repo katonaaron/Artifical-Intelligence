@@ -3,12 +3,15 @@ assign(domain_size, 2).
 assign(max_models, -1).
 
 formulas(assumptions).
-% m1 = [[“The message on the door of room 1 is true”]] 
-% m2 = [[“The message on the door of room 2 is true”]] 
-% m3 = [[“The message on the door of room 3 is true”]] 
-% r1 = [["There is a lady in room 1”]] = 1 + [[“There is a tiger in room 1”]] 
-% r2 = [[“There is a lady in room 2”]] = 1 + [[“There is a tiger in room 2”]] 
-% r3 = [[“There is a lady in room 3”]] = 1 + [[“There is a tiger in room 3”]] 
+% m1 = [["The message on the door of room 1 is true"]] 
+% m2 = [["The message on the door of room 2 is true"]] 
+% m3 = [["The message on the door of room 3 is true"]] 
+% r1 = [["There is a lady in room 1"]] 
+%    = 1 + [["There is a tiger in room 1"]] 
+% r2 = [["There is a lady in room 2"]] 
+%    = 1 + [["There is a tiger in room 2"]] 
+% r3 = [["There is a lady in room 3"]] 
+%    = 1 + [["There is a tiger in room 3"]]  
 
 %Lady in one room and tigers in the other two rooms
 

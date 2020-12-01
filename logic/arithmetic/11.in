@@ -4,18 +4,10 @@ assign(max_models, -1).
 
 formulas(assumptions).
 
-% m1 = [[“The message on the door of room 1 is true”]] 
-% m2 = [[“The message on the door of room 2 is true”]] 
-% m3 = [[“The message on the door of room 3 is true”]] 
-% r1 = [["There is a lady in room 1”]] 
-% r2 = [[“There is a lady in room 2”]] 
-% r3 = [[“There is a lady in room 3”]] 
-% t1 = [["There is a tiger in room 1”]] 
-% t2 = [[“There is a tiger in room 2”]] 
-% t3 = [[“There is a tiger in room 3”]]  
-% e1 = [["Room 1 is empty”]] 
-% e2 = [[“Room 2 is empty”]] 
-% e3 = [[“Room 3 is empty”]] 
+%mi = [["The message on the door of room i is true"]]
+%li = [["There is a lady in room i"]]
+%ei = [["Room i is empty"]]
+%ti = [["There is a tiger in room i"]]
 
 
 %One empty, one lady, one tiger

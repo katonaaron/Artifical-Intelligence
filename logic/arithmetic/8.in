@@ -3,10 +3,11 @@ assign(domain_size, 2).
 assign(max_models, -1).
 
 formulas(assumptions).
-% mij = [[“Message i is on room j and it is true”]] 
-% r1 = [["There is a lady in room 1”]] = 1 + [[“There is a tiger in room 1”]] 
-% r2 = [[“There is a lady in room 2”]] = 1 + [[“There is a tiger in room 2”]] 
-
+% mij = [["Message i is on the door of room j and it is true"]]  
+% r1 = [["There is a lady in room 1"]] 
+%    = 1 + [["There is a tiger in room 1"]] 
+% r2 = [["There is a lady in room 2"]] 
+%    = 1 + [["There is a tiger in room 2"]]  
 
 %This room contains a tiger
 m11 = (r1 + 1) mod 2.
