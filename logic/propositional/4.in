@@ -22,7 +22,7 @@ l2 -> -t2.
 m1 <-> l1 & l2.
 
 %Both rooms contains ladies
-m2 <-> l1 & l2.
+m2 <-> m1.
 
 %If lady in first room, message is true. If tiger in first room, message is false
 l1 -> m1.

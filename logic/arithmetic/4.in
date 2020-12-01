@@ -15,7 +15,7 @@ formulas(assumptions).
 m1 = r1 * r2.
 
 %Both rooms contain ladies
-m2 = r1 * r2.
+m2 = m1.
 
 
 
