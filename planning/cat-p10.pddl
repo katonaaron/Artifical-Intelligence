@@ -3,7 +3,7 @@
     (:objects
         c - cat
         m1 m2 m3 m4 m5 m6 - mouse
-        w1 w2 w3 w4 w5 w6 - wall
+        w1 w2 w3 w4 w5 - wall
         t1 t2 t3 t4 t5 t6 - trap
         s11 s12 s13 s14 s15 s16
         s21 s22 s23 s24 s25 s26
@@ -83,28 +83,27 @@
         (at c s11)
 
         ; mice
-        (at m1 s13)
-        (at m2 s21)
-        (at m3 s25)
-        (at m4 s43)
-        (at m5 s52)
-        (at m6 s66)
+        (at m1 s12)
+        (at m2 s15)
+        (at m3 s34)
+        (at m4 s45)
+        (at m5 s54)
+        (at m6 s62)
 
         ; walls
-        (at w1 s12)
-		(at w2 s16)
-		(at w3 s23)
-		(at w4 s31)
-		(at w5 s46)
-		(at w6 s54)
+        (at w1 s16)
+		(at w2 s22)
+		(at w3 s24)
+		(at w4 s52)
+		(at w5 s66)
 
         ; trap
-        (at t1 s22)
-        (at t2 s24)
-        (at t3 s42)
+        (at t1 s21)
+        (at t2 s23)
+        (at t3 s25)
         (at t4 s44)
-        (at t5 s51)
-		(at t6 s62)
+        (at t5 s61)
+		(at t6 s63)
         
     )
 

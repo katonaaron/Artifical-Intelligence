@@ -1,0 +1,3 @@
+(move c s11 s12)
+(move c s12 s22)
+; cost = 2 (unit cost)
