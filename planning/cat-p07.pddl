@@ -1,10 +1,10 @@
-(define (problem cat-p03)
+(define (problem cat-p07)
     (:domain cat)
     (:objects
         c - cat
         m1 m2 - mouse
-        w1 w2 w3 - wall
-        t1 t2 - trap
+        w1 w2 - wall
+        t1 - trap
         s11 s12 s13 s14
         s21 s22 s23 s24
         s31 s32 s33 s34
@@ -48,7 +48,7 @@
 
         ; walls
         (at w1 s31)
-		(at w2 s22)
+        (at w2 s22)
 
         ; trap
         (at t1 s12)

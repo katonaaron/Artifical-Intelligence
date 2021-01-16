@@ -1,4 +1,4 @@
-(define (problem cat-p03)
+(define (problem cat-p08)
     (:domain cat)
     (:objects
         c - cat
@@ -94,10 +94,10 @@
 
         ; walls
         (at w1 s23)
-		(at w2 s35)
-		(at w3 s43)
-		(at w4 s52)
-		(at w5 s55)
+        (at w2 s35)
+        (at w3 s43)
+        (at w4 s52)
+        (at w5 s55)
 
         ; trap
         (at t1 s15)

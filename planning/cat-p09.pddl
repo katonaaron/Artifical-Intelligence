@@ -1,4 +1,4 @@
-(define (problem cat-p03)
+(define (problem cat-p09)
     (:domain cat)
     (:objects
         c - cat
