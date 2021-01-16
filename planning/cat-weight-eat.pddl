@@ -24,7 +24,7 @@
             (not (at ?c ?s1))
             (when (exists (?t - trap) (at ?t ?s2)) (dead ?c))
             (when (not(exists (?t - trap) (at ?t ?s2))) (at ?c ?s2))
-            (increase (total-cost) 50)
+            (increase (total-cost) 1000)
         )
     )
   
@@ -39,7 +39,7 @@
         :effect (and 
             (not (at ?m ?s)) 
             (dead ?m)
-            (increase (total-cost) 0)
+            (increase (total-cost) 1)
         )
     )
 
@@ -54,7 +54,7 @@
         :effect (and 
             (not (at ?m ?s)) 
             (has ?c ?m)
-            (increase (total-cost) 50)
+            (increase (total-cost) 1000)
         )
     )
 
@@ -71,7 +71,7 @@
             (not (at ?t ?s2)) 
             (dead ?m)
             (not (has ?c ?m))
-            (increase (total-cost) 50)
+            (increase (total-cost) 10000)
         )
     )
 )
