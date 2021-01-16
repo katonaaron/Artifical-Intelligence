@@ -53,5 +53,5 @@
         (at t1 s22)
     )
 
-    (:goal (and (dead c)))
+    (:goal (dead c))
 )
