@@ -650,7 +650,7 @@ Specifying to minimize the total cost:
 
 \subsubsection{Domain - Uniform}
 
-The \verb|cat-weight-uniform.pddl| file defines a domain which works the same as \verb|cat-grab.pddl| because the weight of each action is equal to 1, i.e. each action has uniform cost. Therefore the priority is tho eat all the mice with the least number of actions.
+The \verb|cat-weight-uniform.pddl| file defines a domain which works the same as \verb|cat-grab.pddl| because the weight of each action is equal to 1, i.e. each action has uniform cost. Therefore the priority is to eat all the mice with the least number of actions.
 
 The requirements are updated to enable costs to actions:
 
@@ -673,7 +673,14 @@ One should type the following line to run the example:
 fd cat-weight-uniform.pddl cat-p11.pddl --heuristic "h=ff( )" --search "astar(h)"
 \end{lstlisting}
 
-The program prints the exact same output as for problem 10 described in section \ref{sec:prob_10_res}. The cat chose to eat some mice, and chose to throw some mice into the traps even if it wasn't forced to do it (e.g at (4,4)). 
+The program prints the exact same output as for problem 10 described in section \ref{sec:prob_10_res}. The cat chose to eat some mice, and chose to throw some mice into the traps even if it wasn't forced to do it (e.g at (4,4)). The resulted plan can be seen on figure \ref{fig:cat_weight_uniform}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{fig/A3/cat_10_sol.png}
+    \caption{\textbf{Uniform:} \textit{Eat all the mice with the least number of actions}}
+    \label{fig:cat_weight_uniform}
+\end{figure}
 
 
 
@@ -696,6 +703,15 @@ The program prints the following solution:
 
 One can observe that the agent prioritized the eating of mice over the disabling of the traps. The number of actions does not matter in this case. The cat disabled only those two traps which blocks it from reaching the next mouse. When using the uniform domain, an additional third trap (at (4,4)) was also disabled to reduce the number of actions. Now this trap is remained enable because the low priority of the corresponding action.  
 
+The resulted plan can be seen on figure \ref{fig:cat_weight_eat}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{fig/A3/cat_11_plan_eat.png}
+    \caption{\textbf{Eat priority:} \textit{Eat all the mice. Disable traps only if forced to do it}}
+    \label{fig:cat_weight_eat}
+\end{figure}
+
 
 
 
@@ -717,3 +733,12 @@ The program prints the following solution:
 \lstinputlisting[caption=Output plan]{../planning/cat-p11-plan-trap.txt}
 
 One can observe that the agent prioritized the disabling of the traps instead of eating all the mice as fast as possible. It disabled all the traps and did not eat any mice.
+
+The resulted plan can be seen on figure \ref{fig:cat_weight_trap}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{fig/A3/cat_11_plan_trap.png}
+    \caption{\textbf{Trap priority:} \textit{Disable traps. Eat mice only if there are no more traps.} The blue ``x'' shows that the trap is disabled. The blue arrow show the position where the cat was when it disabled the trap.} 
+    \label{fig:cat_weight_trap}
+\end{figure}
