@@ -92,10 +92,10 @@
 
         ; walls
         (at w1 s16)
-		(at w2 s22)
-		(at w3 s24)
-		(at w4 s52)
-		(at w5 s66)
+        (at w2 s22)
+        (at w3 s24)
+        (at w4 s52)
+        (at w5 s66)
 
         ; trap
         (at t1 s21)
@@ -103,7 +103,7 @@
         (at t3 s25)
         (at t4 s44)
         (at t5 s61)
-		(at t6 s63)
+        (at t6 s63)
         
     )
 

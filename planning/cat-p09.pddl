@@ -92,11 +92,11 @@
 
         ; walls
         (at w1 s12)
-		(at w2 s16)
-		(at w3 s23)
-		(at w4 s31)
-		(at w5 s46)
-		(at w6 s54)
+        (at w2 s16)
+        (at w3 s23)
+        (at w4 s31)
+        (at w5 s46)
+        (at w6 s54)
 
         ; trap
         (at t1 s22)
@@ -104,13 +104,8 @@
         (at t3 s42)
         (at t4 s44)
         (at t5 s51)
-		(at t6 s62)
-
-        (= (total-cost) 0)
-        
+        (at t6 s62)        
     )
 
     (:goal (and (dead m1) (dead m2) (dead m3) (dead m4) (dead m5) (dead m6) ))
-
-    (:metric minimize (total-cost))
 )
