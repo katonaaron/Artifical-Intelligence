@@ -9,7 +9,7 @@ Implementing and compairing multiple search algorithms.
 ## 2. Logic
 
 - Solving logic puzzles with algebra on Boolean rings.
-- **Translator from first order logic to arithmetics in the boolean ring, written in Python.**
+- **Translator from propositional logic to arithmetics in the boolean ring, written in Python.**
 
 ## 3. Planning
 
